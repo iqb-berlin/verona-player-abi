@@ -77,7 +77,7 @@ export class PlayerComponent implements OnDestroy {
       }
       this.rootBlock = this.parserService.parseUnitDefinition(startData.unitDefinition.split(/\r?\n/g));
       this.rootBlock.check(storedResponses);
-      // check if presentationProgress could be sent (e.g. small pages which hasn't to be scrolled)
+      // check if presentationProgress could be sent (e.g. small pages which haven't to be scrolled)
       setTimeout((): void => this.calculatePresentationComplete(window.scrollY));
     } else {
       console.warn('player: (setStartData) no unitDefinition is given');
