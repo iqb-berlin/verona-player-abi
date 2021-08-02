@@ -79,14 +79,30 @@
       }, '*');
     }
 
+    function presentationComplete(event) {
+      window.parent.postMessage({
+        type: 'vopStateChangedNotification',
+        sessionId: sessionId,
+        timeStamp: Date.now(),
+        unitState: {
+          presentationProgress: event.detail
+        },
+        unitStateDataType: playerMetadata.getNamedItem('data-supported-unit-state-data-types').value,
+      }, '*');
+    }
+
     const playerComponent = document.createElement('player-component',{ is : 'player-component' });
     playerComponent.addEventListener('valueChanged', (event) => {
       elementValueChanged(event);
     });
     playerComponent.addEventListener('navigationRequested', (event) => {
-      console.log(navigationRequested, event);
-      navigationRequested(event);
+        navigationRequested(event);
     });
+
+    playerComponent.addEventListener('presentationProgress', (event) => {
+        presentationComplete(event);
+    });
+
     document.body.appendChild(playerComponent)
 
     window.addEventListener('message', (event) => {
@@ -110,7 +126,7 @@
             break;
           case 'vopNavigationDeniedNotification':
             console.info(['player: got vopNavigationDeniedNotification']);
-            playerComponent.tryLeaveNotify();
+            window.dispatchEvent(new CustomEvent('vopNavigationDeniedNotification', {detail: event.data}));
             break;
           default:
             console.warn(`player: got message of unknown type ${event.data.type}`);
