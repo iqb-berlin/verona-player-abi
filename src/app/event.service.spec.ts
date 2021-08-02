@@ -16,7 +16,7 @@ describe('EventService', () => {
   it('should receive 2 vopNavigationDeniedNotification Events',
     () => {
       let counter = 0;
-      eventService.navigationDenied$
+      eventService.navigationDenied
         .subscribe((): number => {
           (counter += 1);
           return counter;
@@ -33,7 +33,7 @@ describe('EventService', () => {
   it('should recognize 2 window scroll events Events',
     () => {
       let counter = 0;
-      eventService.scrollY$
+      eventService.scrollY
         .subscribe((): number => {
           (counter += 1);
           return counter;

@@ -49,11 +49,11 @@ export class PlayerComponent implements OnDestroy {
   }
 
   private subscribeForEvents(): void {
-    this.eventService.navigationDenied$
+    this.eventService.navigationDenied
       .pipe(takeUntil(this.ngUnsubscribe))
       // to evaluate reason, subscribe with param
       .subscribe((): void => this.form.markAllAsTouched());
-    this.eventService.scrollY$
+    this.eventService.scrollY
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((y: number): void => this.calculatePresentationComplete(y));
   }

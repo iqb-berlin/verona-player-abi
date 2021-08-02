@@ -6,21 +6,21 @@ import { fromEvent, Observable, Subject } from 'rxjs';
 })
 
 export class EventService {
-  private navigationDenied = new Subject<string[]>();
-  private scrollY = new Subject<number>();
+  private _navigationDenied = new Subject<string[]>();
+  private _scrollY = new Subject<number>();
 
   constructor() {
     fromEvent(window, 'vopNavigationDeniedNotification')
-      .subscribe((e: CustomEvent) => this.navigationDenied.next(e.detail));
+      .subscribe((e: CustomEvent) => this._navigationDenied.next(e.detail));
     fromEvent(window, 'scroll')
-      .subscribe(() => this.scrollY.next(window.scrollY));
+      .subscribe(() => this._scrollY.next(window.scrollY));
   }
 
-  get navigationDenied$(): Observable<string[]> {
-    return this.navigationDenied.asObservable();
+  get navigationDenied(): Observable<string[]> {
+    return this._navigationDenied.asObservable();
   }
 
-  get scrollY$(): Observable<number> {
-    return this.scrollY.asObservable();
+  get scrollY(): Observable<number> {
+    return this._scrollY.asObservable();
   }
 }
