@@ -55,11 +55,11 @@ export class PlayerComponent implements OnDestroy {
       .subscribe((): void => this.form.markAllAsTouched());
     this.eventService.scrollY
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((y: number): void => this.calculatePresentationComplete(y));
+      .subscribe((scrolledY: number): void => this.calculatePresentationComplete(scrolledY));
   }
 
-  private calculatePresentationComplete(y: number): void {
-    const contentPos = window.innerHeight + y;
+  private calculatePresentationComplete(scrolledY: number): void {
+    const contentPos = window.innerHeight + scrolledY;
     const contentHeight = this.playerContent.nativeElement.offsetHeight + this.playerContent.nativeElement.offsetTop;
     if (contentHeight - contentPos <= 0) {
       this.presentationProgress.emit('complete');
