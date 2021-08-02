@@ -59,9 +59,9 @@ export class PlayerComponent implements OnDestroy {
   }
 
   private calculatePresentationComplete(scrolledY: number): void {
-    const contentPos = window.innerHeight + scrolledY;
+    const contentYPosition = window.innerHeight + scrolledY;
     const contentHeight = this.playerContent.nativeElement.offsetHeight + this.playerContent.nativeElement.offsetTop;
-    if (contentHeight - contentPos <= 0) {
+    if (contentHeight - contentYPosition <= 0) {
       this.presentationProgress.emit('complete');
     }
   }
