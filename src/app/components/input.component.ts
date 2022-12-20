@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { ElementComponent } from '../element.component';
-import { FieldType, PropertyKey } from '../../classes/interfaces';
-import { InputElement } from '../../classes/UIElement';
+import { ElementComponent } from './element.component';
+import { FieldType, PropertyKey } from '../classes/interfaces';
+import { InputElement } from '../classes/UIElement';
 
 @Component({
   selector: 'player-input',

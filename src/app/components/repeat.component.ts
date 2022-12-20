@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { ElementComponent } from '../element.component';
-import { PropertyKey } from '../../classes/interfaces';
-import { RepeatBlock } from '../../classes/UIBlock';
+import { ElementComponent } from './element.component';
+import { PropertyKey } from '../classes/interfaces';
+import { RepeatBlock } from '../classes/UIBlock';
 
 @Component({
   selector: 'player-repeat',

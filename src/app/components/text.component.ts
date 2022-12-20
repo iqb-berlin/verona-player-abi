@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ElementComponent } from '../element.component';
-import { FieldType, PropertyKey } from '../../classes/interfaces';
-import { UIElement } from '../../classes/UIElement';
+import { ElementComponent } from './element.component';
+import { FieldType, PropertyKey } from '../classes/interfaces';
+import { UIElement } from '../classes/UIElement';
 
 @Component({
   selector: 'player-text',

@@ -8,7 +8,7 @@ import { StartData } from './classes/interfaces';
 import { ParserService } from './parser.service';
 import { RepeatBlock, UIBlock } from './classes/UIBlock';
 import { InputElement } from './classes/UIElement';
-import { EventService } from './event.service';
+import { VeronaService } from './verona/verona.service';
 
 @Component({
   template: `
@@ -24,7 +24,7 @@ import { EventService } from './event.service';
   encapsulation: ViewEncapsulation.None
 })
 
-export class PlayerComponent implements OnDestroy {
+export class AppComponent implements OnDestroy {
   @ViewChild('playerContent', { static: false }) playerContent: ElementRef;
   @Output() valueChanged = new EventEmitter<string>();
   @Output() navigationRequested = new EventEmitter<string>();
@@ -37,7 +37,7 @@ export class PlayerComponent implements OnDestroy {
   private ngUnsubscribe = new Subject<void>();
 
   constructor(public parserService: ParserService,
-              private eventService: EventService) {
+              private eventService: VeronaService) {
     this.initFields();
     this.subscribeForEvents();
   }

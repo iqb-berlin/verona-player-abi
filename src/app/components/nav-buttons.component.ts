@@ -1,9 +1,9 @@
 import {
   Component, EventEmitter, OnInit, Output
 } from '@angular/core';
-import { ElementComponent } from '../element.component';
-import { PropertyKey } from '../../classes/interfaces';
-import { UIElement } from '../../classes/UIElement';
+import { ElementComponent } from './element.component';
+import { PropertyKey } from '../classes/interfaces';
+import { UIElement } from '../classes/UIElement';
 
 @Component({
   selector: 'player-nav-button-group',
