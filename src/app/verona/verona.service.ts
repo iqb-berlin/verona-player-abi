@@ -178,6 +178,11 @@ export class VeronaService {
     }
   }
 
+  static getNearestVariableValue(variableName: string, subform: string, responses: VeronaResponse[]): string {
+    // todo
+    return 'todo';
+  }
+
   private static sendConsoleMessage_Info(messageText: string): void {
     // eslint-disable-next-line no-console
     console.info(`%cplayer:%c ${messageText}`, 'color: green', 'color: black');

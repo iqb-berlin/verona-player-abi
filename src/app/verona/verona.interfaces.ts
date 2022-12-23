@@ -2,7 +2,7 @@ export interface VeronaResponse {
   id: string;
   value: string;
   status: string;
-  subform?: string;
+  subform: string;
 }
 
 export interface ChunkData {

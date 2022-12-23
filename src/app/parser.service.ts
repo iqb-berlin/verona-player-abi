@@ -9,6 +9,7 @@ import {
   TextInputElement, UIElement
 } from './classes/UIElement';
 import { environment } from '../environments/environment';
+import {HRElement} from "./classes/elements/hr-element.class";
 
 type IfStackObjectKey = 'isTrueBranch' | 'uiBlock';
 type IfElementCompoundObject = Record<IfStackObjectKey, UIBlock | boolean>; // holds IfBlock and true/false branch state
@@ -100,47 +101,52 @@ Unterstützte Versionen: ${supportedMajorVersions}`;
     this.scriptLines.forEach(line => {
       let elementToAdd: UIElement | UIBlock = null;
       if (line.trim() === '') {
-        elementToAdd = new UIElement(FieldType.TEXT);
-      } else if (ParserService.getKeyword(line) === 'rem') {
-        return;
-      } else if (ParserService.getKeyword(line) === 'likert-start') {
-        const likertBlockElement = ParserService.createLikertBlock(line);
-        if (likertBlockElement instanceof UIElement) {
-          elementToAdd = likertBlockElement;
-        } else {
-          this.openBlocks.push(likertBlockElement);
-        }
-      } else if (ParserService.getKeyword(line) === 'likert-end') {
-        elementToAdd =
-          this.openBlocks.pop() as LikertBlock;
-      } else if (ParserService.getKeyword(line) === 'if-start') { // createIfBlock and add to stack
-        const ifElseBlock = ParserService.createIfElseBlock(line);
-
-        if (ifElseBlock instanceof UIElement) { // error case
-          elementToAdd = ifElseBlock;
-        } else {
-          this.openBlocks.push({
-            isTrueBranch: true,
-            uiBlock: ifElseBlock
-          });
-        }
-      } else if (ParserService.getKeyword(line) === 'if-else') { // switch to true branch of last object
-        (this.openBlocks[this.openBlocks.length - 1] as Record<IfStackObjectKey, UIBlock | boolean>).isTrueBranch =
-          false;
-      } else if (ParserService.getKeyword(line) === 'if-end') { // remove last object and mark for adding
-        elementToAdd =
-          (this.openBlocks.pop() as Record<IfStackObjectKey, UIBlock | boolean>).uiBlock as unknown as UIBlock;
-      } else if (ParserService.getKeyword(line) === 'repeat-start') {
-        const repeatBlockElement = ParserService.createRepeatBlock(line);
-        if (repeatBlockElement instanceof UIElement) {
-          elementToAdd = repeatBlockElement;
-        } else {
-          this.openBlocks.push(repeatBlockElement);
-        }
-      } else if (ParserService.getKeyword(line) === 'repeat-end') {
-        elementToAdd = this.openBlocks.pop() as RepeatBlock;
+        elementToAdd = new TextElement();
+      } else if (line.trim().toLowerCase() === 'hr') {
+        elementToAdd = new HRElement();
       } else {
-        elementToAdd = ParserService.parseElement(line, this.idCounter);
+        const lineSplits = line.split('::');
+        const keyword = lineSplits[0].toLowerCase();
+        if (keyword === 'rem') return;
+        const restOfLine = lineSplits.length > 1 ? lineSplits[1] : '';
+        if (keyword === 'likert-start') {
+          const likertBlockElement = ParserService.createLikertBlock(line);
+          if (likertBlockElement instanceof UIElement) {
+            elementToAdd = likertBlockElement;
+          } else {
+            this.openBlocks.push(likertBlockElement);
+          }
+        } else if (keyword === 'likert-end') {
+          elementToAdd =
+            this.openBlocks.pop() as LikertBlock;
+        } else if (keyword === 'if-start') { // createIfBlock and add to stack
+          const ifElseBlock = ParserService.createIfElseBlock(line);
+          if (ifElseBlock instanceof UIElement) { // error case
+            elementToAdd = ifElseBlock;
+          } else {
+            this.openBlocks.push({
+              isTrueBranch: true,
+              uiBlock: ifElseBlock
+            });
+          }
+        } else if (keyword === 'if-else') { // switch to true branch of last object
+          (this.openBlocks[this.openBlocks.length - 1] as Record<IfStackObjectKey, UIBlock | boolean>).isTrueBranch =
+            false;
+        } else if (keyword === 'if-end') { // remove last object and mark for adding
+          elementToAdd =
+            (this.openBlocks.pop() as Record<IfStackObjectKey, UIBlock | boolean>).uiBlock as unknown as UIBlock;
+        } else if (keyword === 'repeat-start') {
+          const repeatBlockElement = ParserService.createRepeatBlock(line);
+          if (repeatBlockElement instanceof UIElement) {
+            elementToAdd = repeatBlockElement;
+          } else {
+            this.openBlocks.push(repeatBlockElement);
+          }
+        } else if (keyword === 'repeat-end') {
+          elementToAdd = this.openBlocks.pop() as RepeatBlock;
+        } else {
+          elementToAdd = ParserService.parseElement(keyword, restOfLine, this.idCounter);
+        }
       }
 
       if (elementToAdd) {
@@ -162,16 +168,23 @@ Unterstützte Versionen: ${supportedMajorVersions}`;
     });
   }
 
-  private static parseElement(line: string, id): UIElement {
-    const keyword = ParserService.getKeyword(line);
+  private static parseElement(keyword: string, line: string, id): UIElement {
+    let newElement: UIElement;
     switch (keyword) {
-      case 'text': // falls through
-      case 'header': // falls through
+      case 'text':
+        return new TextElement(line);
+      case 'header':
+        newElement = new TextElement(line);
+        newElement.type = FieldType.HEADER;
+        return newElement;
       case 'title': // falls through
+        newElement = new TextElement(line);
+        newElement.type = FieldType.TITLE;
+        return newElement;
       case 'html':
-        return ParserService.createTextElement(line);
-      case 'hr':
-        return new UIElement(FieldType.HR);
+        newElement = new TextElement(line);
+        newElement.type = FieldType.HTML;
+        return newElement;
       case 'input-text':
         return ParserService.createTextInputElement(line, id);
       case 'input-number':
