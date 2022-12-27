@@ -4,15 +4,18 @@ import { VeronaResponse } from '../../verona/verona.interfaces';
 
 export class ErrorElement extends UIElement {
   text: string;
-  constructor(errorText?: string) {
+  parameter: string;
+  constructor(errorText?: string, parameter?: string) {
     super();
     this.type = FieldType.SCRIPT_ERROR;
     this.text = errorText;
+    this.parameter = parameter;
   }
 
   copyProperties(targetElement: ErrorElement) {
     super.copyProperties(targetElement);
     targetElement.text = this.text;
+    targetElement.parameter = this.parameter;
   }
 
   clone(): ErrorElement {

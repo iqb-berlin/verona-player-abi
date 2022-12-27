@@ -5,10 +5,9 @@ import { FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ParserService } from './parser.service';
-import { RepeatBlock, UIBlock } from './classes/UIBlock';
-import { InputElement } from './classes/UIElement';
 import { VeronaService } from './verona/verona.service';
-import {ProgressValue, UnitNavigationTarget} from './verona/verona.interfaces';
+import { ProgressValue, UnitNavigationTarget } from './verona/verona.interfaces';
+import { SimpleBlock } from './classes/blocks/simple-block.class';
 
 @Component({
   template: `
@@ -27,7 +26,7 @@ import {ProgressValue, UnitNavigationTarget} from './verona/verona.interfaces';
 export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('playerContent', { static: false }) playerContent: ElementRef;
 
-  rootBlock = new UIBlock();
+  rootBlock = new SimpleBlock('');
   allValues: Record<string, string> = {};
   form = new FormGroup({});
   private ngUnsubscribe = new Subject<void>();
@@ -47,7 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.veronaService.startCommand
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(startCommandData => {
-        this.rootBlock = this.parserService.parseUnitDefinition(startCommandData.unitDefinition.split(/\r?\n/g));
+        this.rootBlock = ParserService.parseUnitDefinition(startCommandData.unitDefinition.split(/\r?\n/g));
         this.allValues = {};
         if (startCommandData.unitState) {
           startCommandData.unitState.forEach(chunk => {
