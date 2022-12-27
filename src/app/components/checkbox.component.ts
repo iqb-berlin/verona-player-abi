@@ -1,22 +1,23 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component, Input, OnDestroy, OnInit
+} from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ElementComponent } from './element.component';
-import { PropertyKey } from '../classes/interfaces';
-import { InputElement } from '../classes/UIElement';
+import { CheckboxElement } from '../classes';
 
 @Component({
   selector: 'player-checkbox',
   template: `
-    <div fxLayout="row" fxLayoutAlign="space-between center" fxFill>
-      <div fxFlex="50" *ngIf="preText">
-        <p>{{preText}}</p>
+    <div class="fx-row-space-between-center">
+      <div [style.flex]="'50'" *ngIf="elementData.textBefore">
+        {{elementData.textBefore}}
       </div>
-      <div fxFlex="50">
+      <div [style.flex]="'50'">
         <mat-checkbox class="chb" [formControl]="checkboxControl"
-                      matTooltip={{helpText}}
+                      [matTooltip]="elementData.helpText"
                       [matTooltipPosition]="'above'">
-          {{postText}}
+          {{elementData.textAfter}}
         </mat-checkbox>
         <mat-error *ngIf="checkboxControl.errors && checkboxControl.touched">
           {{checkboxControl.errors | errorTransform: true}}
@@ -28,33 +29,28 @@ import { InputElement } from '../classes/UIElement';
     '.chb {margin: 5px;}']
 })
 export class CheckboxComponent extends ElementComponent implements OnInit, OnDestroy {
-  preText = '';
-  postText = '';
-  helpText = '';
+  @Input() elementData: CheckboxElement;
   checkboxControl = new FormControl();
   valueChangeSubscription: Subscription;
 
   ngOnInit(): void {
-    const elementData = this.elementData as InputElement;
-    this.preText = elementData.properties.get(PropertyKey.TEXT);
-    this.postText = elementData.properties.get(PropertyKey.TEXT2);
-    this.helpText = elementData.helpText;
-    if (elementData.required) {
+    if (this.elementData.required) {
       this.checkboxControl.setValidators(Validators.requiredTrue);
     }
-    this.parentForm.addControl(elementData.id, this.checkboxControl);
+    this.parentForm.addControl(this.elementData.id, this.checkboxControl);
     this.valueChangeSubscription = this.checkboxControl.valueChanges.subscribe(() => {
       if (this.checkboxControl.valid && this.checkboxControl.value === true) {
-        this.value = 'true';
+        this.elementData.value = 'true';
       } else {
-        this.value = 'false';
+        this.elementData.value = 'false';
       }
+      this.valueChange.emit(this.elementData.value);
     });
-    this.checkboxControl.setValue(this.value === 'true');
+    this.checkboxControl.setValue(this.elementData.value === 'true');
   }
 
   ngOnDestroy(): void {
     this.valueChangeSubscription.unsubscribe();
-    this.parentForm.removeControl((this.elementData as InputElement).id);
+    this.parentForm.removeControl(this.elementData.id);
   }
 }

@@ -1,8 +1,8 @@
 import { UIElement } from '../UIElement';
 import { UIBlock } from '../UIBlock';
-import {FieldType} from "../interfaces";
-import {SimpleBlock} from "./simple-block.class";
-import {VeronaResponse} from "../../verona/verona.interfaces";
+import { FieldType } from '../interfaces';
+import { SimpleBlock } from './simple-block.class';
+import { VeronaResponse } from '../../verona/verona.interfaces';
 
 export class RepeatBlock extends UIBlock {
   id: string;
@@ -12,6 +12,9 @@ export class RepeatBlock extends UIBlock {
   headerText = 'Block';
   templateElements: UIElement[] = [];
   localIDs = []; // array of IDs in the RepeatBlock, so IfBlocks can adjust their condition var
+  get elementsAsSimpleBlocks(): SimpleBlock[] {
+    return this.elements.map(e => e as SimpleBlock);
+  }
 
   constructor(subform: string, definitionLine?: string) {
     super(subform, definitionLine);

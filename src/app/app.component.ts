@@ -1,5 +1,5 @@
 import {
-  Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation
+  Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ParserService } from './parser.service';
 import { VeronaService } from './verona/verona.service';
 import { ProgressValue, UnitNavigationTarget } from './verona/verona.interfaces';
-import { SimpleBlock } from './classes/blocks/simple-block.class';
+import { SimpleBlock, UIElement } from './classes';
 
 @Component({
   template: `
@@ -68,9 +68,9 @@ export class AppComponent implements OnInit, OnDestroy {
     return 'some';
   }
 
-  formValueChanged(event: InputElement | RepeatBlock): void {
-    this.rootBlock.check({ ...this.allValues, [event.id]: event.value });
-    this.allValues = this.rootBlock.getValues();
+  formValueChanged(event: UIElement): void {
+    this.rootBlock.check([]); // { ...this.allValues, [event.id]: event.value });
+    // this.allValues = this.rootBlock.getValues();
     // console.log('player: unit responses sent', this.allValues);
     // todo: send vopUnitStateChanged --> this.valueChanged.emit(JSON.stringify(this.allValues));
   }

@@ -1,35 +1,34 @@
 import {
-  Component, OnDestroy, OnInit, ViewEncapsulation
+  Component, Input, OnDestroy, ViewEncapsulation
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ElementComponent } from './element.component';
-import { LikertBlock } from '../classes/UIBlock';
-import {LikertElement} from "../classes/UIElement";
+import { ErrorElement, LikertBlock, LikertElement } from '../classes';
 
 @Component({
   selector: 'player-likert',
   template: `
-    <mat-card fxLayout="column" fxLayoutAlign="start stretch">
-      <div fxLayout="row" fxLayoutAlign="space-between center">
-        <div fxFlex="40">&nbsp;</div>
-        <div fxFlex="60" fxLayout="row" fxLayoutAlign="space-around center">
-          <div *ngFor="let header of elementDataAsLikertBlock.headerList"
-               fxFlex fxLayout="row" fxLayoutAlign="center center">{{ header }}</div>
+    <mat-card class="fx-column-start-stretch">
+      <div class="fx-row-space-between-center">
+        <div [style.flex]="'40'">&nbsp;</div>
+        <div [style.flex]="'60'" class="fx-row-space-around-center">
+          <div *ngFor="let header of headerList" class="fx-row-center-center">{{header}}</div>
         </div>
       </div>
-      <mat-card-content fxLayout="column" fxLayoutAlign="start stretch">
-        <div *ngFor="let element of elementDataAsLikertBlock.elements"
-             [formGroup]="parentForm" fxLayout="column" class="likert-row" >
-          <div *ngIf="element.fieldType == fieldType.SCRIPT_ERROR">
-            {{element.errorText}}
+      <mat-card-content class="fx-column-start-stretch">
+        <div *ngFor="let element of elements"
+             [formGroup]="parentForm" class="likert-row">
+          <div *ngIf="element.type === fieldType.SCRIPT_ERROR">
+            {{element.text}}
           </div>
-          <div *ngIf="element.fieldType !== fieldType.SCRIPT_ERROR" fxLayout="row" fxLayoutAlign="space-between center">
-            <div fxFlex="40" [matTooltip]="element.helpText">{{element.text}}</div>
-            <mat-radio-group [formControlName]="element.id" fxFlex="60"
-                             fxLayout="row" fxLayoutAlign="space-around center">
-              <mat-radio-button fxFlex [value]="header"
-                                *ngFor="let header of elementDataAsLikertBlock.headerList;let i=index;"
+          <div *ngIf="element.fieldType === fieldType.LIKERT_ELEMENT"
+               class="fx-row-space-around-center">
+            <div [style.flex]="'40'" [matTooltip]="element.helpText">{{element.textBefore}}</div>
+            <mat-radio-group [formControlName]="element.id" [style.flex]="'60'"
+                             class="fx-row-space-around-center">
+              <mat-radio-button [style.flex]="'auto'" [value]="header"
+                                *ngFor="let header of headerList;let i=index;"
                                 [formControlName]="element.id" ngDefaultControl>
               </mat-radio-button>
             </mat-radio-group>
@@ -47,26 +46,32 @@ import {LikertElement} from "../classes/UIElement";
   encapsulation: ViewEncapsulation.None
 })
 
-export class LikertComponent extends ElementComponent implements OnInit, OnDestroy {
+export class LikertComponent extends ElementComponent implements OnDestroy {
+  headerList: string[];
+  elements: (LikertElement | ErrorElement)[];
   formControls = [];
   valueChangeSubscriptions: Subscription[] = [];
 
-  ngOnInit(): void {
-    const elementData = this.elementData as LikertBlock;
-    elementData.elements.forEach(likertElement => {
+  @Input()
+  set elementData(value: LikertBlock) {
+    this.elements = [];
+    this.headerList = value.headerList;
+    this.valueChangeSubscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+    value.elements.forEach(likertElement => {
       if (likertElement instanceof LikertElement) {
         const formControl = new FormControl(likertElement.id);
         this.formControls.push(formControl);
         this.parentForm.addControl(likertElement.id, formControl);
-        formControl.valueChanges.subscribe(newValue => {
-          formControl.markAsTouched();
+        this.valueChangeSubscriptions.push(formControl.valueChanges.subscribe(newValue => {
           likertElement.value = String(newValue);
-          // Need to manually emit this, since the LikertBlock has no value prop to set and trigger the parent method
-          this.elementDataChange.emit(likertElement);
-        });
-        if (likertElement.value) {
-          formControl.setValue(likertElement.value);
-        }
+          this.valueChange.emit();
+        }));
+        if (likertElement.value) formControl.setValue(likertElement.value);
+        this.elements.push(likertElement);
+      } else if (likertElement instanceof ErrorElement) {
+        this.elements.push(likertElement);
       }
     });
   }

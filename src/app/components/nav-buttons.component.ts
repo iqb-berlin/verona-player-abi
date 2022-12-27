@@ -1,15 +1,14 @@
 import {
-  Component, EventEmitter, OnInit, Output
+  Component, EventEmitter, Input, Output
 } from '@angular/core';
 import { ElementComponent } from './element.component';
-import { PropertyKey } from '../classes/interfaces';
-import { UIElement } from '../classes/UIElement';
+import { NavButtonGroupElement } from '../classes';
 
 @Component({
   selector: 'player-nav-button-group',
   template: `
-    <div fxLayout="row" fxLayoutAlign="center none">
-      <div *ngFor="let option of options">
+    <div class="fx-row-center-center">
+      <div *ngFor="let option of elementData.options">
         <button mat-raised-button matTooltip="{{iconMap[option].tooltip}}"
                 (click)="click(option)">
           <mat-icon>{{iconMap[option].iconName}}</mat-icon>
@@ -19,10 +18,10 @@ import { UIElement } from '../classes/UIElement';
   `,
   styles: ['button {margin: 20px 5px}']
 })
-export class NavButtonsComponent extends ElementComponent implements OnInit {
+export class NavButtonsComponent extends ElementComponent {
+  @Input() elementData: NavButtonGroupElement;
   @Output() navigationRequested = new EventEmitter<string>();
 
-  options: string[] = [];
   iconMap = {
     previous: {
       iconName: 'keyboard_arrow_left',
@@ -45,11 +44,6 @@ export class NavButtonsComponent extends ElementComponent implements OnInit {
       tooltip: 'Beenden'
     }
   };
-
-  ngOnInit(): void {
-    const elementData = this.elementData as UIElement;
-    this.options = elementData.properties.get(PropertyKey.TEXT2).split('##');
-  }
 
   click(option: string): void {
     this.navigationRequested.emit(option);

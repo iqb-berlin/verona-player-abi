@@ -1,8 +1,8 @@
 import { FieldType } from '../interfaces';
 import { InputElement } from './input-element.class';
 
-export class DropDownElement extends InputElement {
-  textAfter = '';
+export class SelectionElement extends InputElement {
+  options: string[] = [];
   constructor(subform: string, definitionLine?: string) {
     super(subform);
     this.type = FieldType.DROP_DOWN;
@@ -12,17 +12,17 @@ export class DropDownElement extends InputElement {
   parseDefinition(definitionLine: string): string {
     const localDefinition = super.parseDefinition(definitionLine);
     const lineSplits = localDefinition.split('::');
-    this.textAfter = lineSplits.shift();
+    this.options = lineSplits.shift().split('##');
     return lineSplits.join('::');
   }
 
-  copyProperties(targetElement: DropDownElement) {
+  copyProperties(targetElement: SelectionElement) {
     super.copyProperties(targetElement);
-    targetElement.textAfter = this.textAfter;
+    targetElement.options = this.options;
   }
 
-  clone(subform?: string): DropDownElement {
-    const newElement = new DropDownElement(subform);
+  clone(subform?: string): SelectionElement {
+    const newElement = new SelectionElement(subform);
     this.copyProperties(newElement);
     return newElement;
   }

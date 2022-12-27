@@ -7,8 +7,7 @@ import {
   NumberInputElement,
   TextInputElement,
   CheckboxElement,
-  MultiChoiceElement,
-  DropDownElement,
+  SelectionElement,
   NavButtonGroupElement,
   HRElement,
   LikertBlock,
@@ -95,10 +94,14 @@ export class ParserService {
               returnElements.push(new CheckboxElement(subform, restOfLine));
               break;
             case 'multiple-choice':
-              returnElements.push(new MultiChoiceElement(subform, restOfLine));
+              newElement = new SelectionElement(subform, restOfLine);
+              newElement.type = FieldType.MULTIPLE_CHOICE;
+              returnElements.push(newElement);
               break;
             case 'drop-down':
-              returnElements.push(new DropDownElement(subform, restOfLine));
+              newElement = new SelectionElement(subform, restOfLine);
+              newElement.type = FieldType.DROP_DOWN;
+              returnElements.push(newElement);
               break;
             case 'nav-button-group':
               returnElements.push(new NavButtonGroupElement(restOfLine));
