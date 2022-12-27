@@ -54,7 +54,7 @@ import { FieldType } from '../classes/interfaces';
       </div>
     </ng-container>
   `,
-  styles: ['.script-error {color: orange; background-color: navy; padding: 10px 4px}']
+  styles: ['.script-error {color: orange; background-color: navy; padding: 4px 12px}']
 })
 export class SubFormComponent extends ElementComponent {
   @Input() elementData: UIElement;

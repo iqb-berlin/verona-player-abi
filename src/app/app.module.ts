@@ -26,6 +26,8 @@ import {
 } from './components';
 import { AppComponent } from './app.component';
 import { InputErrorPipe } from './components/input-error.pipe';
+import { PlayerToolbarComponent } from './player-toolbar.component';
+import {MatMenuModule} from "@angular/material/menu";
 
 @NgModule({
   declarations: [
@@ -38,7 +40,8 @@ import { InputErrorPipe } from './components/input-error.pipe';
     SubFormComponent,
     NavButtonsComponent,
     LikertComponent,
-    AppComponent
+    AppComponent,
+    PlayerToolbarComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +56,8 @@ import { InputErrorPipe } from './components/input-error.pipe';
     ReactiveFormsModule,
     MatExpansionModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    MatMenuModule
   ],
   bootstrap: [AppComponent]
 })

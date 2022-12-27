@@ -24,8 +24,12 @@ import { FieldType } from './classes/interfaces';
 export class ParserService {
   static parseUnitDefinition(scriptLines: string[]): SimpleBlock {
     const returnBlock = new SimpleBlock('');
+    let headerLine = '';
+    while (!headerLine && scriptLines.length > 0) {
+      headerLine = scriptLines.shift().trim();
+    }
     if (scriptLines.length > 0) {
-      if (ParserService.scriptHeaderOk(scriptLines.shift())) {
+      if (ParserService.scriptHeaderOk(headerLine)) {
         returnBlock.elements = ParserService.parseScriptLineBlock('', 1, scriptLines);
       } else {
         returnBlock.elements.push(new ErrorElement('script-error.invalid-format'));
@@ -37,8 +41,9 @@ export class ParserService {
   }
 
   private static scriptHeaderOk(headerLine: string): boolean {
-    const lineMatches = headerLine.trim().match(/^iqb-stripted::(\d+).(\d+)$/i);
-    if (lineMatches && lineMatches.length > 3) {
+    const lineMatches = headerLine.trim().match(/^iqb-scripted::(\d+).(\d+)$/i);
+    console.log(lineMatches);
+    if (lineMatches && lineMatches.length > 2) {
       const majorVersion = parseInt(lineMatches[1], 10);
       const minorVersion = parseInt(lineMatches[2], 10);
       if (majorVersion === 1 && minorVersion === 0) return true;
@@ -194,7 +199,11 @@ export class ParserService {
               if (!endOfBlockMarkerFound) returnElements.push(new ErrorElement('script-error.unfinished-if-block'));
               break;
             default:
-              returnElements.push(new ErrorElement('script-error.invalid-keyword', keyword));
+              if (keyword) {
+                returnElements.push(new ErrorElement('script-error.invalid-keyword', keyword));
+              } else {
+                returnElements.push(new TextElement());
+              }
           }
         } catch {
           returnElements.push(new ErrorElement('script-error.syntax', lineNumber.toString()));

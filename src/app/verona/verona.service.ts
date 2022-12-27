@@ -197,4 +197,23 @@ export class VeronaService {
     // eslint-disable-next-line no-console
     console.error(`%cplayer: %c ${messageText}`, 'color: green', 'color: black');
   }
+
+  raiseNewStartCommandForTesting(unitDefinition: string) {
+    this.sessionId = Math.floor(Math.random() * 20000000 + 10000000).toString();
+    const startCommandData: StartCommandData = {
+      unitDefinition: unitDefinition,
+      unitState: [],
+      playerConfig: {
+        unitId: '0',
+        unitNumber: 0,
+        unitTitle: 'Unit 0',
+        logPolicy: 'rich',
+        pagingMode: 'separate',
+        enabledNavigationTargets: [UnitNavigationTarget.END, UnitNavigationTarget.NEXT, UnitNavigationTarget.PREVIOUS],
+        startPage: '',
+        directDownloadUrl: ''
+      }
+    };
+    this._startCommand.next(startCommandData);
+  }
 }

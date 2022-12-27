@@ -10,7 +10,9 @@ import { ProgressValue, UnitNavigationTarget } from './verona/verona.interfaces'
 import { SimpleBlock, UIElement } from './classes';
 
 @Component({
+  selector: 'app-root',
   template: `
+    <player-toolbar *ngIf="isStandalone"></player-toolbar>
     <form #playerContent [formGroup]="form">
       <div *ngFor="let element of rootBlock.elements" [style.margin]="'0px 30px'">
         <player-sub-form [elementData]="element" [parentForm]="form"
@@ -30,6 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
   allValues: Record<string, string> = {};
   form = new FormGroup({});
   private ngUnsubscribe = new Subject<void>();
+  isStandalone: boolean = window === window.parent;
 
   constructor(public parserService: ParserService,
               private veronaService: VeronaService) {
