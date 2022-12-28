@@ -9,53 +9,45 @@ import { SelectionElement } from '../classes';
 @Component({
   selector: 'player-select',
   template: `
-    <div class="fx-row-space-between-start">
-      <div [style.flex]="'50'" *ngIf="elementData.textBefore">
+    <div [class]="elementData.type === fieldType.MULTIPLE_CHOICE ? 'fx-row-start-start' : 'fx-row-start-center'">
+      <div [style.flex] ="'0 1 50%'" *ngIf="elementData.textBefore">
         {{elementData.textBefore}}
       </div>
-      <div [style.flex]="'auto'" class="fx-row-space-between-start">
-        <mat-radio-group class="r-group fx-column-start-stretch" [formControl]="selectInputControl"
-                         *ngIf="elementData.type === fieldType.MULTIPLE_CHOICE"
-                         matTooltip={{helpText}} [matTooltipPosition]="'above'">
-          <mat-radio-button class="r-option" *ngFor="let option of elementData.options; let i = index"
-                            [value]="(i + 1).toString()">
+      <mat-radio-group *ngIf="elementData.type === fieldType.MULTIPLE_CHOICE"
+                       [style.flex]="'50'" class="fx-column-start-stretch" [formControl]="selectInputControl"
+                       [matTooltip]="elementData.helpText" [matTooltipPosition]="'above'">
+        <mat-radio-button *ngFor="let option of elementData.options; let i = index"
+                          [value]="(i + 1).toString()">
+          {{option}}
+        </mat-radio-button>
+        <mat-error *ngIf="selectInputControl.touched && selectInputControl.errors">
+          {{selectInputControl.errors | errorTransform}}
+        </mat-error>
+      </mat-radio-group>
+
+      <mat-form-field [style.flex]="'50'"
+        appearance="fill" *ngIf="elementData.type === fieldType.DROP_DOWN">
+        <mat-select [formControl]="selectInputControl" placeholder="Bitte wählen"
+                    [matTooltip]="elementData.helpText" [matTooltipPosition]="'above'">
+          <mat-option *ngIf="!elementData.required" [value]=""></mat-option>
+          <mat-option *ngFor="let option of elementData.options; let i = index" [value]="(i + 1).toString()">
             {{option}}
-          </mat-radio-button>
-          <mat-error *ngIf="selectInputControl.touched && selectInputControl.errors">
-            {{selectInputControl.errors | errorTransform}}
-          </mat-error>
-        </mat-radio-group>
-        <mat-form-field appearance="fill" *ngIf="elementData.type === fieldType.DROP_DOWN">
-          <mat-select [formControl]="selectInputControl" placeholder="Bitte wählen"
-                      matTooltip={{helpText}} [matTooltipPosition]="'above'">
-            <mat-option *ngIf="showEmptyOptionFirst" [value]=""></mat-option>
-            <mat-option *ngFor="let option of elementData.options; let i = index" [value]="(i + 1).toString()">
-              {{option}}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="selectInputControl.errors">
-            {{selectInputControl.errors | errorTransform}}
-          </mat-error>
-        </mat-form-field>
-      </div>
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="selectInputControl.errors">
+          {{selectInputControl.errors | errorTransform}}
+        </mat-error>
+      </mat-form-field>
     </div>
-  `,
-  styles: [
-    '.r-group {display: flex; flex-direction: column; margin: 15px 0;}',
-    '.r-option {margin: 5px;}']
+  `
 })
 export class SelectComponent extends ElementComponent implements OnInit, OnDestroy {
   @Input() elementData: SelectionElement;
   selectInputControl = new FormControl();
   valueChangeSubscription: Subscription;
-  showEmptyOptionFirst = false;
 
   ngOnInit(): void {
-    if (this.elementData.required) {
-      this.selectInputControl.setValidators(Validators.required);
-    } else {
-      this.showEmptyOptionFirst = true;
-    }
+    if (this.elementData.required) this.selectInputControl.setValidators(Validators.required);
     if (this.elementData.value) this.selectInputControl.setValue(this.elementData.value);
     this.parentForm.addControl(this.elementData.id, this.selectInputControl);
     this.valueChangeSubscription = this.selectInputControl.valueChanges.subscribe(() => {

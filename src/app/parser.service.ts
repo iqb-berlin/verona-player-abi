@@ -148,8 +148,11 @@ export class ParserService {
                 if (keywordInBlock === 'repeat-end') {
                   if (lineBuffer.length > 0) {
                     newElement = new RepeatBlock(subform, restOfLine);
-                    (newElement as RepeatBlock).elements = ParserService.parseScriptLineBlock(
+                    (newElement as RepeatBlock).templateElements = ParserService.parseScriptLineBlock(
                       `${subform ? `${subform}##` : ''}${(newElement as RepeatBlock).id}`, lineNumber, lineBuffer
+                    );
+                    (newElement as RepeatBlock).templateElements.push(
+                      ...ParserService.checkForMultipleIds((newElement as RepeatBlock).templateElements)
                     );
                     lineNumber += lineBuffer.length;
                     returnElements.push(newElement);

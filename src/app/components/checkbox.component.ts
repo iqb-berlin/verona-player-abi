@@ -9,8 +9,8 @@ import { CheckboxElement } from '../classes';
 @Component({
   selector: 'player-checkbox',
   template: `
-    <div class="fx-row-space-between-center">
-      <div [style.flex]="'50'" *ngIf="elementData.textBefore">
+    <div class="fx-row-start-center">
+      <div [style.flex] ="'0 1 50%'" *ngIf="elementData.textBefore">
         {{elementData.textBefore}}
       </div>
       <div [style.flex]="'50'">
@@ -24,9 +24,7 @@ import { CheckboxElement } from '../classes';
         </mat-error>
       </div>
     </div>
-  `,
-  styles: [
-    '.chb {margin: 5px;}']
+  `
 })
 export class CheckboxComponent extends ElementComponent implements OnInit, OnDestroy {
   @Input() elementData: CheckboxElement;

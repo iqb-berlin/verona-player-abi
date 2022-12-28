@@ -29,6 +29,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   justify-content: flex-start;
   align-items: center;
 }
+.fx-row-start-start {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
 .fx-row-center-center {
   display: flex;
   flex-direction: row;
