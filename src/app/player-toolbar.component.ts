@@ -43,7 +43,7 @@ export class PlayerToolbarComponent {
     iqb-scripted::1.0
     title::Test-Script 2
     input-text::V001::0::Bitte Begründung eingeben!::::15
-    input-text::V001::0::Bitte Begründung eingeben!::km/h::4
+    input-text::V003::0::Bitte Begründung eingeben!::km/h::4
     hr
     input-text::V002::1::Bitte irgendwas anderes eingeben!
     input-number::V002::1::Bitte ein Zahl eingeben!::kg::0::3

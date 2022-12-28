@@ -16,6 +16,7 @@ import {
   IfThenElseBlock
 } from './classes';
 import { FieldType } from './classes/interfaces';
+import { InputElement } from './classes/elements/input-element.class';
 
 @Injectable({
   providedIn: 'root'
@@ -211,6 +212,44 @@ export class ParserService {
         returnElements.push(new TextElement());
       }
     }
+    returnElements.push(...ParserService.checkForMultipleIds(returnElements));
     return returnElements;
+  }
+
+  static checkForMultipleIds(elementsToCheck: UIElement[]): ErrorElement[] {
+    const returnElements: ErrorElement[] = [];
+    const doubleIds: string[] = [];
+    const singleIds: string[] = [];
+    ParserService.getAllIds(elementsToCheck).forEach(id => {
+      if (singleIds.includes(id)) {
+        if (!doubleIds.includes(id)) doubleIds.push(id);
+      } else {
+        singleIds.push(id);
+      }
+    });
+    doubleIds.forEach(id => {
+      returnElements.push(new ErrorElement('script-error.multiple-id', id));
+    });
+    return returnElements;
+  }
+
+  static getAllIds(elementsToCheck: UIElement[]): string[] {
+    const allIds: string[] = [];
+    elementsToCheck.forEach(e => {
+      if (e instanceof InputElement) {
+        allIds.push((e as InputElement).id);
+      } else if (e instanceof RepeatBlock) {
+        allIds.push((e as RepeatBlock).id);
+        // ignore templateElements because these are of new scope/subform
+      } else if (e instanceof LikertBlock) {
+        (e as LikertBlock).elements.forEach(liE => {
+          if (liE instanceof LikertElement) allIds.push((liE as LikertElement).id);
+        });
+      } else if (e instanceof IfThenElseBlock) {
+        allIds.push(...ParserService.getAllIds((e as IfThenElseBlock).trueElements));
+        allIds.push(...ParserService.getAllIds((e as IfThenElseBlock).falseElements));
+      }
+    });
+    return allIds;
   }
 }
