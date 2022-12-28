@@ -3,8 +3,8 @@ import { InputElement } from './input-element.class';
 
 export class NumberInputElement extends InputElement {
   textAfter = '';
-  minValue = 0;
-  maxValue = 0;
+  minValue = -Number.MAX_VALUE;
+  maxValue = Number.MAX_VALUE;
   constructor(subform: string, definitionLine?: string) {
     super(subform);
     this.type = FieldType.INPUT_NUMBER;
@@ -14,9 +14,15 @@ export class NumberInputElement extends InputElement {
   parseDefinition(definitionLine: string): string {
     const localDefinition = super.parseDefinition(definitionLine);
     const lineSplits = localDefinition.split('::');
-    this.textAfter = lineSplits.shift();
-    this.minValue = parseInt(lineSplits.shift(), 10);
-    this.maxValue = parseInt(lineSplits.shift(), 10);
+    if (lineSplits.length > 0) this.textAfter = lineSplits.shift();
+    if (lineSplits.length > 0) {
+      const numValue = lineSplits.shift();
+      if (numValue) this.minValue = parseInt(numValue, 10);
+    }
+    if (lineSplits.length > 0) {
+      const numValue = lineSplits.shift();
+      if (numValue) this.maxValue = parseInt(numValue, 10);
+    }
     return lineSplits.join('::');
   }
 

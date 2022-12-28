@@ -42,7 +42,6 @@ export class ParserService {
 
   private static scriptHeaderOk(headerLine: string): boolean {
     const lineMatches = headerLine.trim().match(/^iqb-scripted::(\d+).(\d+)$/i);
-    console.log(lineMatches);
     if (lineMatches && lineMatches.length > 2) {
       const majorVersion = parseInt(lineMatches[1], 10);
       const minorVersion = parseInt(lineMatches[2], 10);
@@ -200,7 +199,7 @@ export class ParserService {
               break;
             default:
               if (keyword) {
-                returnElements.push(new ErrorElement('script-error.invalid-keyword', keyword));
+                if (keyword !== 'rem') returnElements.push(new ErrorElement('script-error.invalid-keyword', keyword));
               } else {
                 returnElements.push(new TextElement());
               }
