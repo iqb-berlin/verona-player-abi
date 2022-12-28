@@ -14,6 +14,9 @@ import { VeronaService } from './verona/verona.service';
       <button mat-menu-item (click)="script2()">
         Load Script2
       </button>
+      <button mat-menu-item (click)="script3()">
+        Load Script3
+      </button>
     </mat-menu>
   `,
   styles: [
@@ -48,7 +51,27 @@ export class PlayerToolbarComponent {
     checkbox::task162ahmfF::0::Sie fühlen sich beunruhigt
     multiple-choice::task3wtrtimeS::1::Ich fühle mich heute großartig::trifft gar nicht zu##trifft eher nicht zu##trifft eher zu##trifft voll zu
     drop-down::ta33S::1::Ich fühlte mich gestern großartig::trifft gar nicht zu##trifft eher nicht zu##trifft eher zu##trifft voll zu
+    checkboxes-start::Ich habe in meiner Verwandtschaft??düdü
+      checkbox::ch01::0::Frauen
+      checkbox::ch02::0::Männer
+      checkbox::ch03::0::Kinder
+      checkbox::ch04::0::Greise
+      checkbox::ch05::0::Hunde
+    checkboxes-end
+    `);
+  }
 
+  script3() {
+    this.veronaService.raiseNewStartCommandForTesting(`
+    iqb-scripted::1.0
+    title::Script 3 - Likert
+  likert-start::sehr hilfreich##eher hilfreich##teilweise hilfreich##eher nicht hilfreich##nicht hilfreich
+  likert::task2useA::Abschnitt 1: Einleitung
+  likert::task2useB::Abschnitt 2: Starten der Computer
+  likert::task2useC::Abschnitt 3: Anmeldung
+  likert::task2useD::Abschnitt 4: Steuerung über Testleitungskonsole
+  likert::task2useE::Abschnitt 5: Speichern/Beenden
+  likert-end
     `);
   }
 }

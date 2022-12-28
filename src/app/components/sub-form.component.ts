@@ -3,6 +3,7 @@ import {
 } from '@angular/core';
 import { ElementComponent } from './element.component';
 import {
+  CheckboxBlock,
   CheckboxElement,
   ErrorElement, LikertBlock, NavButtonGroupElement,
   NumberInputElement, RepeatBlock,
@@ -31,6 +32,9 @@ import { FieldType } from '../classes/interfaces';
       <player-checkbox *ngSwitchCase="fieldType.CHECKBOX" [elementData]="elementDataAsCheckboxElement"
                        (elementDataChange)="elementDataChange.emit(elementData)" [parentForm]="parentForm">
       </player-checkbox>
+      <player-checkboxes *ngSwitchCase="fieldType.CHECKBOX_BLOCK" [elementData]="elementDataAsCheckboxBlock"
+                       (elementDataChange)="elementDataChange.emit(elementData)" [parentForm]="parentForm">
+      </player-checkboxes>
       <player-select *ngSwitchCase="fieldType.MULTIPLE_CHOICE" [elementData]="elementDataAsSelectionElement"
                      (elementDataChange)="elementDataChange.emit(elementData)" [parentForm]="parentForm">
       </player-select>
@@ -94,5 +98,9 @@ export class SubFormComponent extends ElementComponent {
 
   get elementDataAsSimpleBlock(): SimpleBlock {
     return this.elementData as SimpleBlock;
+  }
+
+  get elementDataAsCheckboxBlock(): CheckboxBlock {
+    return this.elementData as CheckboxBlock;
   }
 }

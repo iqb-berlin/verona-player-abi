@@ -56,6 +56,14 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           }
         },
@@ -65,10 +73,14 @@
             "browserTarget": "verona-player-abi:build"
           },
           "configurations": {
+            "development": {
+              "browserTarget": "verona-player-abi:build:development"
+            },
             "production": {
               "browserTarget": "verona-player-abi:build:production"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

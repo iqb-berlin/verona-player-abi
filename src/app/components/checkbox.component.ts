@@ -14,7 +14,7 @@ import { CheckboxElement } from '../classes';
         {{elementData.textBefore}}
       </div>
       <div [style.flex]="'50'">
-        <mat-checkbox class="chb" [formControl]="checkboxControl"
+        <mat-checkbox [formControl]="checkboxControl"
                       [matTooltip]="elementData.helpText"
                       [matTooltipPosition]="'above'">
           {{elementData.textAfter}}

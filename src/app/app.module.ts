@@ -14,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 
 // TODO move components into component dir. no reason to have sub dirs with one file
+import { MatMenuModule } from '@angular/material/menu';
 import {
   SubFormComponent,
   RepeatComponent,
@@ -27,7 +28,7 @@ import {
 import { AppComponent } from './app.component';
 import { InputErrorPipe } from './components/input-error.pipe';
 import { PlayerToolbarComponent } from './player-toolbar.component';
-import {MatMenuModule} from "@angular/material/menu";
+import { CheckboxesComponent } from './components/checkboxes.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import {MatMenuModule} from "@angular/material/menu";
     NavButtonsComponent,
     LikertComponent,
     AppComponent,
+    CheckboxesComponent,
     PlayerToolbarComponent
   ],
   imports: [

@@ -13,6 +13,7 @@ import {
   LikertBlock,
   LikertElement,
   RepeatBlock,
+  CheckboxBlock,
   IfThenElseBlock
 } from './classes';
 import { FieldType } from './classes/interfaces';
@@ -138,6 +139,35 @@ export class ParserService {
               }
               if (!endOfBlockMarkerFound) returnElements.push(new ErrorElement('script-error.unfinished-likert-block'));
               break;
+            case 'checkboxes-start':
+              lineBuffer = [];
+              endOfBlockMarkerFound = false;
+              while (!endOfBlockMarkerFound && (blockLines.length > 0)) {
+                lineSplits = blockLines.shift().split('::');
+                lineNumber += 1;
+                keywordInBlock = lineSplits.shift().trim().toLowerCase();
+                restOfLineInBlock = lineSplits.join('::');
+                if (keywordInBlock === 'checkboxes-end') {
+                  if (lineBuffer.length > 0) {
+                    newElement = new CheckboxBlock(subform, restOfLine);
+                    while (lineBuffer.length > 0) {
+                      (newElement as CheckboxBlock).elements.push(new CheckboxElement(subform, lineBuffer.shift()));
+                    }
+                    returnElements.push(newElement);
+                  } else {
+                    returnElements.push(new ErrorElement('script-error.empty-checkboxes-block'));
+                  }
+                  endOfBlockMarkerFound = true;
+                } else if (keywordInBlock === 'checkbox') {
+                  lineBuffer.push(restOfLineInBlock);
+                } else if (keywordInBlock.length > 0) {
+                  returnElements.push(new ErrorElement('script-error.unexpected-keyword-in-checkboxes-block'));
+                }
+              }
+              if (!endOfBlockMarkerFound) {
+                returnElements.push(new ErrorElement('script-error.unfinished-checkboxes-block'));
+              }
+              break;
             case 'repeat-start':
               lineBuffer = [];
               endOfBlockMarkerFound = false;
@@ -247,6 +277,10 @@ export class ParserService {
       } else if (e instanceof LikertBlock) {
         (e as LikertBlock).elements.forEach(liE => {
           if (liE instanceof LikertElement) allIds.push((liE as LikertElement).id);
+        });
+      } else if (e instanceof CheckboxBlock) {
+        (e as CheckboxBlock).elements.forEach(liE => {
+          if (liE instanceof CheckboxElement) allIds.push((liE as CheckboxElement).id);
         });
       } else if (e instanceof IfThenElseBlock) {
         allIds.push(...ParserService.getAllIds((e as IfThenElseBlock).trueElements));

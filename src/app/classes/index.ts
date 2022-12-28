@@ -1,3 +1,4 @@
+export { CheckboxBlock } from './blocks/checkbox-block.class';
 export { SelectionElement } from './elements/selection-element.class';
 export { UIElement } from './UIElement';
 export { IfThenElseBlock } from './blocks/if-then-else-block.class';

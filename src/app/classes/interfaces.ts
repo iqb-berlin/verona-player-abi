@@ -16,7 +16,8 @@ export enum FieldType {
   LIKERT_BLOCK,
   IFTHENELSE_BLOCK,
   REPEAT_BLOCK,
-  SIMPLE_BLOCK
+  SIMPLE_BLOCK,
+  CHECKBOX_BLOCK
 }
 
 export enum NavButtonOptions {
