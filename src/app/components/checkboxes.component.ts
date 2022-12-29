@@ -33,7 +33,6 @@ import { CheckboxBlock, CheckboxElement, ErrorElement } from '../classes';
 
 export class CheckboxesComponent extends ElementComponent implements OnInit, OnDestroy {
   localForm = new FormGroup({});
-  formControls = [];
   valueChangeSubscriptions: Subscription[] = [];
   elements: (CheckboxElement | ErrorElement)[] = [];
   textBefore = '';
@@ -41,10 +40,10 @@ export class CheckboxesComponent extends ElementComponent implements OnInit, OnD
   @Input()
   set elementData(value: CheckboxBlock) {
     this.textBefore = value.textBefore;
+    this.elements = [];
     value.elements.forEach(checkboxElement => {
       if (checkboxElement instanceof CheckboxElement) {
         const formControl = new FormControl();
-        this.formControls.push(formControl);
         this.localForm.addControl(checkboxElement.id, formControl, { emitEvent: false });
         this.elements.push(checkboxElement);
         /*
@@ -68,8 +67,6 @@ export class CheckboxesComponent extends ElementComponent implements OnInit, OnD
     this.valueChangeSubscriptions.forEach(subscription => {
       subscription.unsubscribe();
     });
-    this.formControls.forEach(formControl => {
-      this.parentForm.removeControl(formControl);
-    });
+    // this.parentForm.removeControl(formControl);
   }
 }

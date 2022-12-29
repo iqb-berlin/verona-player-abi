@@ -1,7 +1,7 @@
 import {
-  Component, Input, OnDestroy, ViewEncapsulation
+  Component, Input, OnDestroy, OnInit, ViewEncapsulation
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ElementComponent } from './element.component';
 import { ErrorElement, LikertBlock, LikertElement } from '../classes';
@@ -16,20 +16,17 @@ import { ErrorElement, LikertBlock, LikertElement } from '../classes';
           <div *ngFor="let header of headerList" class="fx-row-center-center">{{header}}</div>
         </div>
       </div>
-      <mat-card-content class="fx-column-start-stretch">
-        <div *ngFor="let element of elements"
-             [formGroup]="parentForm" class="likert-row">
+      <mat-card-content class="fx-column-start-stretch" [formGroup]="localForm">
+        <div *ngFor="let element of elements" class="likert-row">
           <div *ngIf="element.type === fieldType.SCRIPT_ERROR">
-            {{element.text}}
+            {{element.textBefore}}
           </div>
-          <div *ngIf="element.fieldType === fieldType.LIKERT_ELEMENT"
+          <div *ngIf="element.type === fieldType.LIKERT_ELEMENT"
                class="fx-row-space-around-center">
             <div [style.flex]="'40'" [matTooltip]="element.helpText">{{element.textBefore}}</div>
             <mat-radio-group [formControlName]="element.id" [style.flex]="'60'"
                              class="fx-row-space-around-center">
-              <mat-radio-button [style.flex]="'auto'" [value]="header"
-                                *ngFor="let header of headerList;let i=index;"
-                                [formControlName]="element.id" ngDefaultControl>
+              <mat-radio-button *ngFor="let header of headerList; let i = index" [value]="(i + 1).toString()">
               </mat-radio-button>
             </mat-radio-group>
           </div>
@@ -46,10 +43,10 @@ import { ErrorElement, LikertBlock, LikertElement } from '../classes';
   encapsulation: ViewEncapsulation.None
 })
 
-export class LikertComponent extends ElementComponent implements OnDestroy {
+export class LikertComponent extends ElementComponent implements OnInit, OnDestroy {
+  localForm = new FormGroup({});
   headerList: string[];
   elements: (LikertElement | ErrorElement)[];
-  formControls = [];
   valueChangeSubscriptions: Subscription[] = [];
 
   @Input()
@@ -61,14 +58,15 @@ export class LikertComponent extends ElementComponent implements OnDestroy {
     });
     value.elements.forEach(likertElement => {
       if (likertElement instanceof LikertElement) {
-        const formControl = new FormControl(likertElement.id);
-        this.formControls.push(formControl);
-        this.parentForm.addControl(likertElement.id, formControl);
+        const formControl = new FormControl();
+        this.localForm.addControl(likertElement.id, formControl);
+        /*
         this.valueChangeSubscriptions.push(formControl.valueChanges.subscribe(newValue => {
           likertElement.value = String(newValue);
           this.valueChange.emit();
         }));
         if (likertElement.value) formControl.setValue(likertElement.value);
+         */
         this.elements.push(likertElement);
       } else if (likertElement instanceof ErrorElement) {
         this.elements.push(likertElement);
@@ -76,12 +74,16 @@ export class LikertComponent extends ElementComponent implements OnDestroy {
     });
   }
 
+  ngOnInit() {
+    setTimeout(() => {
+      this.parentForm.addControl('', this.localForm);
+    });
+  }
+
   ngOnDestroy(): void {
     this.valueChangeSubscriptions.forEach(subscription => {
       subscription.unsubscribe();
     });
-    this.formControls.forEach(formControl => {
-      this.parentForm.removeControl(formControl);
-    });
+    //  this.parentForm.removeControl(formControl);
   }
 }

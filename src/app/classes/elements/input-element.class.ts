@@ -19,8 +19,14 @@ export abstract class InputElement extends UIElement {
     const localDefinition = super.parseDefinition(definitionLine);
     const lineSplits = localDefinition.split('::');
     this.id = lineSplits.shift().trim();
-    this.required = lineSplits.shift().trim() === '1';
-    this.textBefore = lineSplits.shift();
+    const requiredOrText = lineSplits.shift();
+    if (requiredOrText.trim() === '0' || requiredOrText.trim() === '1') {
+      this.required = requiredOrText.trim() === '1';
+      this.textBefore = lineSplits.shift();
+    } else {
+      this.required = false;
+      this.textBefore = requiredOrText;
+    }
     return lineSplits.join('::');
   }
 
