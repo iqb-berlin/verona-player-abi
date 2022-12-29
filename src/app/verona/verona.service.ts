@@ -2,28 +2,11 @@ import { Injectable } from '@angular/core';
 import { fromEvent, Observable, Subject } from 'rxjs';
 import {
   ChunkData,
-  PlayerConfig,
   ProgressValue,
   StartCommandData,
   UnitNavigationTarget,
   VeronaResponse
 } from './verona.interfaces';
-
-interface NavigationDeniedData {
-  sessionId: string,
-  reasons: string[]
-}
-
-interface LocalDataParts {
-  dataParts: { [key: string]: string; },
-}
-
-interface LocalStartCommandData {
-  sessionId: string,
-  unitDefinition: string,
-  unitState: LocalDataParts,
-  playerConfig: PlayerConfig
-}
 
 interface LocalUnitState {
   responseProgress?: ProgressValue,
@@ -45,59 +28,62 @@ export class VeronaService {
   private sessionId = '';
 
   constructor() {
-    fromEvent(window, 'vopNavigationDeniedNotification')
-      .subscribe((e: CustomEvent) => {
-        const navDeniedData: NavigationDeniedData = e.detail;
-        if (navDeniedData && navDeniedData.sessionId === this.sessionId) {
-          this._navigationDenied.next(navDeniedData.reasons);
-        } else {
-          VeronaService.sendConsoleMessage_Error('got invalid vopNavigationDeniedNotification (sessionId?)');
-        }
-      });
-    fromEvent(window, 'vopStartCommand')
-      .subscribe((e: CustomEvent) => {
-        const startCommandData: LocalStartCommandData = e.detail;
-        if (startCommandData && startCommandData.sessionId) {
-          if (startCommandData.unitDefinition) {
-            this.sessionId = startCommandData.sessionId;
-            const returnStartCommandData: StartCommandData = {
-              unitDefinition: startCommandData.unitDefinition,
-              unitState: [],
-              playerConfig: startCommandData.playerConfig
-            };
-            if (startCommandData.unitState && startCommandData.unitState.dataParts) {
-              returnStartCommandData.unitState = Object.keys(startCommandData.unitState.dataParts)
-                .map(k => {
-                  let responses: VeronaResponse[];
-                  try {
-                    responses = JSON.parse(startCommandData.unitState.dataParts[k]);
-                  } catch {
-                    VeronaService.sendConsoleMessage_Warn(
-                      `got invalid unitState in vopStartCommand (chunk id "${k}")`
-                    );
-                    responses = [];
-                  }
-                  return <ChunkData>{
-                    id: k,
-                    variables: responses
-                  };
-                })
-                .filter(c => c.variables.length > 0);
+    fromEvent(window, 'message')
+      .subscribe((event: Event): void => {
+        const messageData = (event as MessageEvent).data;
+        switch (messageData.type) {
+          case 'vopNavigationDeniedNotification':
+            if (messageData.sessionId === this.sessionId) {
+              this._navigationDenied.next(messageData.reasons || []);
+            } else {
+              VeronaService.sendConsoleMessage_Error('got invalid vopNavigationDeniedNotification (sessionId?)');
             }
-            this._startCommand.next(returnStartCommandData);
-          } else {
-            VeronaService.sendConsoleMessage_Error('got invalid vopStartCommand (missing unitDefinition)');
-          }
-        } else {
-          VeronaService.sendConsoleMessage_Error('got invalid vopStartCommand (missing sessionId)');
+            break;
+          case 'vopStartCommand':
+            if (messageData.sessionId) {
+              if (messageData.unitDefinition) {
+                this.sessionId = messageData.sessionId;
+                const returnStartCommandData: StartCommandData = {
+                  unitDefinition: messageData.unitDefinition,
+                  unitState: [],
+                  playerConfig: messageData.playerConfig
+                };
+                if (messageData.unitState && messageData.unitState.dataParts) {
+                  returnStartCommandData.unitState = Object.keys(messageData.unitState.dataParts)
+                    .map(k => {
+                      let responses: VeronaResponse[];
+                      try {
+                        responses = JSON.parse(messageData.unitState.dataParts[k]);
+                      } catch {
+                        VeronaService.sendConsoleMessage_Warn(
+                          `got invalid unitState in vopStartCommand (chunk id "${k}")`
+                        );
+                        responses = [];
+                      }
+                      return <ChunkData>{
+                        id: k,
+                        variables: responses
+                      };
+                    })
+                    .filter(c => c.variables.length > 0);
+                }
+                this._startCommand.next(returnStartCommandData);
+              } else {
+                VeronaService.sendConsoleMessage_Error('got invalid vopStartCommand (missing unitDefinition)');
+              }
+            } else {
+              VeronaService.sendConsoleMessage_Error('got invalid vopStartCommand (missing sessionId)');
+            }
+            break;
+
+          case 'vopPageNavigationCommand':
+            VeronaService.sendConsoleMessage_Warn('vopPageNavigationCommand not supported by this player');
+            break;
+
+          default:
+            VeronaService.sendConsoleMessage_Warn(`unknown message type '${messageData.type}'`);
         }
       });
-    fromEvent(window, 'vopPageNavigationCommand')
-      .subscribe(() => {
-        VeronaService.sendConsoleMessage_Warn('vopPageNavigationCommand not supported by this player');
-      });
-    fromEvent(window, 'scroll')
-      .subscribe(() => this._scrollY.next(window.scrollY));
 
     window.addEventListener('blur', () => {
       window.parent.postMessage({
@@ -140,7 +126,9 @@ export class VeronaService {
   }
 
   sendNewUnitState(dataChunks: ChunkData[], responseProgress: ProgressValue, presentationProgress: ProgressValue) {
-    if (window.parent) {
+    if (window === window.parent) {
+      VeronaService.sendConsoleMessage_Info('vopStateChangedNotification sent');
+    } else {
       const stateData: LocalUnitState = {};
       if (responseProgress) stateData.responseProgress = responseProgress;
       if (presentationProgress) stateData.presentationProgress = presentationProgress;
@@ -158,8 +146,6 @@ export class VeronaService {
         timeStamp: Date.now(),
         unitState: stateData
       }, '*');
-    } else {
-      VeronaService.sendConsoleMessage_Info('vopStateChangedNotification sent');
     }
   }
 

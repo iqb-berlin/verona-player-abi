@@ -28,7 +28,12 @@ export enum UnitNavigationTarget {
   PAUSE = 'pause'
 }
 
-export type ProgressValue = '' | 'none' | 'some' | 'complete';
+export enum ProgressValue {
+  UNSET = '',
+  NONE = 'none',
+  SOME = 'some',
+  COMPLETE = 'complete'
+}
 
 export interface PlayerConfig {
   unitNumber: number,

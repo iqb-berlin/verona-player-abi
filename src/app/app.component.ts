@@ -6,13 +6,15 @@ import { debounceTime, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ParserService } from './parser.service';
 import { VeronaService } from './verona/verona.service';
-import { ProgressValue, UnitNavigationTarget } from './verona/verona.interfaces';
+import {
+  ProgressValue, UnitNavigationTarget, VeronaResponseStatus
+} from './verona/verona.interfaces';
 import { SimpleBlock } from './classes';
 
 @Component({
   selector: 'app-root',
   template: `
-    <player-toolbar *ngIf="isStandalone"></player-toolbar>
+    <player-toolbar *ngIf="isStandalone" [parentForm]="form"></player-toolbar>
     <form #playerContent [formGroup]="form">
       <div *ngFor="let element of rootBlock.elements" [style.margin]="'0px 30px'">
         <player-sub-form [elementData]="element" [parentForm]="form"
@@ -33,19 +35,14 @@ export class AppComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject<void>();
   isStandalone: boolean = window === window.parent;
   valueChangesHappening = new Subject();
+  lastPresentationProgress: ProgressValue = ProgressValue.UNSET;
+  lastResponseProgress: ProgressValue = ProgressValue.UNSET;
 
-  constructor(public parserService: ParserService,
-              private veronaService: VeronaService) {
+  constructor(private veronaService: VeronaService) {
     this.veronaService.navigationDenied
       .pipe(takeUntil(this.ngUnsubscribe))
       // to evaluate reason, subscribe with param
       .subscribe(() => this.form.markAllAsTouched());
-    this.veronaService.scrollY
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((scrolledY: number) => {
-        const presentationProgress = this.getPresentationProgress(scrolledY);
-        // todo: send presentationProgress
-      });
     this.veronaService.startCommand
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(startCommandData => {
@@ -56,11 +53,6 @@ export class AppComponent implements OnInit, OnDestroy {
           });
         }
         this.rootBlock = tmpRootBlock;
-        setTimeout(() => {
-          // todo: send presentationProgress on start?
-          // todo: derive from responses?
-          const presentationProgress = this.getPresentationProgress(window.scrollY);
-        });
       });
     this.valueChangesHappening
       .pipe(
@@ -72,20 +64,27 @@ export class AppComponent implements OnInit, OnDestroy {
       });
   }
 
-  private getPresentationProgress(scrolledY: number): ProgressValue {
-    const contentYPosition = window.innerHeight + scrolledY;
-    const contentHeight = this.playerContent.nativeElement.offsetHeight + this.playerContent.nativeElement.offsetTop;
-    if (contentHeight - contentYPosition <= 0) return 'complete';
-    return 'some';
-  }
-
   formValueChanged(): void {
     const allValues = this.rootBlock.getValues();
-    console.log(allValues);
-    this.rootBlock.check(allValues); // { ...this.allValues, [event.id]: event.value });
-    // this.allValues = this.rootBlock.getValues();
-    // console.log('player: unit responses sent', this.allValues);
-    // todo: send vopUnitStateChanged --> this.valueChanged.emit(JSON.stringify(this.allValues));
+    this.rootBlock.check(allValues);
+    let newResponseProgress = this.form.valid ? ProgressValue.COMPLETE : ProgressValue.NONE;
+    if (newResponseProgress !== this.lastResponseProgress) {
+      this.lastResponseProgress = newResponseProgress;
+    } else {
+      newResponseProgress = undefined;
+    }
+    const firstNotPresentedVariable = allValues.find(v => v.status === VeronaResponseStatus.NOT_REACHED);
+    let newPresentationProgress = (allValues.length > 0 && firstNotPresentedVariable) ?
+      ProgressValue.SOME : ProgressValue.COMPLETE;
+    if (newPresentationProgress !== this.lastPresentationProgress) {
+      this.lastPresentationProgress = newPresentationProgress;
+    } else {
+      newPresentationProgress = undefined;
+    }
+    this.veronaService.sendNewUnitState([{
+      id: 'allData',
+      variables: allValues
+    }], newResponseProgress, newPresentationProgress);
   }
 
   // eslint-disable-next-line class-methods-use-this

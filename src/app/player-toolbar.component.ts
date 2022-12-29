@@ -1,4 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {
+  Component, EventEmitter, Input, Output
+} from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { VeronaService } from './verona/verona.service';
 
 @Component({
@@ -20,6 +23,9 @@ import { VeronaService } from './verona/verona.service';
       <button mat-menu-item (click)="script4()">
         Load Script4
       </button>
+      <button mat-menu-item (click)="check()">
+        Check
+      </button>
     </mat-menu>
   `,
   styles: [
@@ -27,6 +33,7 @@ import { VeronaService } from './verona/verona.service';
   ]
 })
 export class PlayerToolbarComponent {
+  @Input() parentForm: FormGroup;
   @Output() toggleDrawerClick = new EventEmitter();
 
   constructor(
@@ -135,5 +142,9 @@ repeat-start::examinees::Wie viele Prüflinge gibt es?::Angaben zu Prüfling::20
       text::"Lieblingsfarbe" wurde nicht angekreuzt.
     if-end
 repeat-end    `);
+  }
+
+  check() {
+    console.log(this.parentForm.valid);
   }
 }
