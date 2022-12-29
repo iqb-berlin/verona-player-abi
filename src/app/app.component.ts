@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ParserService } from './parser.service';
 import { VeronaService } from './verona/verona.service';
 import { ProgressValue, UnitNavigationTarget } from './verona/verona.interfaces';
-import { SimpleBlock, UIElement } from './classes';
+import { SimpleBlock } from './classes';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +29,6 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('playerContent', { static: false }) playerContent: ElementRef;
 
   rootBlock = new SimpleBlock('');
-  allValues: Record<string, string> = {};
   form = new FormGroup({});
   private ngUnsubscribe = new Subject<void>();
   isStandalone: boolean = window === window.parent;
@@ -49,13 +48,13 @@ export class AppComponent implements OnInit, OnDestroy {
     this.veronaService.startCommand
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(startCommandData => {
-        this.rootBlock = ParserService.parseUnitDefinition(startCommandData.unitDefinition.split(/\r?\n/g));
-        this.allValues = {};
+        const tmpRootBlock = ParserService.parseUnitDefinition(startCommandData.unitDefinition.split(/\r?\n/g));
         if (startCommandData.unitState) {
           startCommandData.unitState.forEach(chunk => {
-            this.rootBlock.check(chunk.variables);
+            tmpRootBlock.check(chunk.variables);
           });
         }
+        this.rootBlock = tmpRootBlock;
         setTimeout(() => {
           // todo: send presentationProgress on start?
           // todo: derive from responses?

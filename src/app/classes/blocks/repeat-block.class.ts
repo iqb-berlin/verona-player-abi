@@ -4,6 +4,8 @@ import { FieldType } from '../interfaces';
 import { SimpleBlock } from './simple-block.class';
 import { VeronaResponse } from '../../verona/verona.interfaces';
 
+export const SubformSeparator = '##';
+
 export class RepeatBlock extends UIBlock {
   id: string;
   numberOfSubForms = 0;
@@ -77,7 +79,7 @@ export class RepeatBlock extends UIBlock {
       if (i < oldSubBlockNumber) {
         newElements.push(this.elements[i]);
       } else {
-        const newSubformId = `${this.subform ? `${this.subform}##` : ''}${this.id}_${i}`;
+        const newSubformId = `${this.subform ? `${this.subform}${SubformSeparator}` : ''}${this.id}_${i}`;
         const newElement = new SimpleBlock(newSubformId);
         this.templateElements.forEach(templateElement => {
           const cloneElement = templateElement.clone(newSubformId);

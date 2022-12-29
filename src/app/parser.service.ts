@@ -249,7 +249,7 @@ export class ParserService {
     return returnElements;
   }
 
-  static checkForMultipleIds(elementsToCheck: UIElement[]): ErrorElement[] {
+  private static checkForMultipleIds(elementsToCheck: UIElement[]): ErrorElement[] {
     const returnElements: ErrorElement[] = [];
     const doubleIds: string[] = [];
     const singleIds: string[] = [];
@@ -266,7 +266,7 @@ export class ParserService {
     return returnElements;
   }
 
-  static getAllIds(elementsToCheck: UIElement[]): string[] {
+  private static getAllIds(elementsToCheck: UIElement[]): string[] {
     const allIds: string[] = [];
     elementsToCheck.forEach(e => {
       if (e instanceof InputElement) {

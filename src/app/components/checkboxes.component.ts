@@ -2,9 +2,9 @@ import {
   Component, Input, OnDestroy, OnInit
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { ElementComponent } from './element.component';
 import { CheckboxBlock, CheckboxElement, ErrorElement } from '../classes';
+import { InputElement } from '../classes/elements/input-element.class';
 
 @Component({
   selector: 'player-checkboxes',
@@ -21,6 +21,7 @@ import { CheckboxBlock, CheckboxElement, ErrorElement } from '../classes';
           <div *ngIf="element.type === fieldType.CHECKBOX">
             <mat-checkbox [formControlName]="element.id"
                           [matTooltip]="element.helpText"
+                          (ngModelChange)="valueChanged(element.id, $event)"
                           [matTooltipPosition]="'above'">
               {{element.textBefore}}
             </mat-checkbox>
@@ -33,7 +34,7 @@ import { CheckboxBlock, CheckboxElement, ErrorElement } from '../classes';
 
 export class CheckboxesComponent extends ElementComponent implements OnInit, OnDestroy {
   localForm = new FormGroup({});
-  valueChangeSubscriptions: Subscription[] = [];
+  localFormId = Math.floor(Math.random() * 20000000 + 10000000).toString();
   elements: (CheckboxElement | ErrorElement)[] = [];
   textBefore = '';
 
@@ -46,27 +47,26 @@ export class CheckboxesComponent extends ElementComponent implements OnInit, OnD
         const formControl = new FormControl();
         this.localForm.addControl(checkboxElement.id, formControl, { emitEvent: false });
         this.elements.push(checkboxElement);
-        /*
-        this.valueChangeSubscriptions.push(formControl.valueChanges.subscribe(newValue => {
-          checkboxElement.value = String(newValue);
-          this.valueChange.emit();
-        }));
-        if (checkboxElement.value) formControl.setValue(checkboxElement.value);
-         */
+        formControl.setValue(checkboxElement.value === 'true', { emitEvent: false });
       }
     });
   }
 
   ngOnInit() {
     setTimeout(() => {
-      this.parentForm.addControl('', this.localForm);
+      this.parentForm.addControl(this.localFormId, this.localForm);
     });
   }
 
   ngOnDestroy(): void {
-    this.valueChangeSubscriptions.forEach(subscription => {
-      subscription.unsubscribe();
-    });
-    // this.parentForm.removeControl(formControl);
+    this.parentForm.removeControl(this.localFormId);
+  }
+
+  valueChanged(id: string, $event: boolean) {
+    const myElement = this.elements.find(e => (e as InputElement).id === id);
+    if (myElement) {
+      (myElement as InputElement).value = $event ? 'true' : 'false';
+      this.valueChange.emit();
+    }
   }
 }

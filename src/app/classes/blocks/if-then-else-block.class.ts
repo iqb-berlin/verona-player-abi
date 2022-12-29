@@ -2,7 +2,7 @@ import { UIElement } from '../UIElement';
 import { UIBlock } from '../UIBlock';
 import { FieldType } from '../interfaces';
 import { VeronaResponse } from '../../verona/verona.interfaces';
-import { VeronaService } from '../../verona/verona.service';
+import { SubformSeparator } from './repeat-block.class';
 
 export class IfThenElseBlock extends UIBlock {
   conditionVariableName = '';
@@ -11,8 +11,9 @@ export class IfThenElseBlock extends UIBlock {
   falseElements: UIElement[] = [];
 
   constructor(subform: string, definitionLine?: string) {
-    super(subform, definitionLine);
+    super(subform);
     this.type = FieldType.IFTHENELSE_BLOCK;
+    if (definitionLine) this.parseDefinition(definitionLine);
   }
 
   parseDefinition(definitionLine: string): string {
@@ -37,10 +38,25 @@ export class IfThenElseBlock extends UIBlock {
   }
 
   check(values: VeronaResponse[]): void {
-    const varValue = VeronaService.getNearestVariableValue(
-      this.conditionVariableName, this.subform, values
-    );
-    if (this.conditionTrueValue === varValue) {
+    console.log(values);
+    const mySubforms: string[] = this.subform ? this.subform.split(SubformSeparator) : [];
+    let conditionVariableValue = '';
+    let searchComplete = false;
+    do {
+      const searchSubForm = mySubforms.length > 0 ? mySubforms.join(SubformSeparator) : '';
+      const myResponse = values.find(vr => (vr.id === this.conditionVariableName) && (vr.subform === searchSubForm));
+      if (myResponse) {
+        searchComplete = true;
+        conditionVariableValue = myResponse.value;
+      } else if (mySubforms.length === 0) {
+        searchComplete = true;
+      } else {
+        mySubforms.pop();
+      }
+    } while (!searchComplete);
+    console.log(this.conditionVariableName, this.subform);
+    console.log(this.conditionTrueValue, conditionVariableValue);
+    if (this.conditionTrueValue === conditionVariableValue) {
       this.elements = this.trueElements;
       this.falseElements.forEach(e => {
         e.hide();

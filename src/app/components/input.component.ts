@@ -2,7 +2,6 @@ import {
   Component, Input, OnDestroy, OnInit
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { ElementComponent } from './element.component';
 import { NumberInputElement, TextInputElement } from '../classes';
 
@@ -19,6 +18,7 @@ import { NumberInputElement, TextInputElement } from '../classes';
                   [cdkAutosizeMaxRows]="elementAsTextInput.maxLines ? elementAsTextInput.maxLines + 1 : 2"
                   [formControl]="inputControl"
                   autocomplete="off"
+                  (ngModelChange)="valueChanged($event)"
                   [matTooltip]="elementData.helpText"
                   matTooltipPosition="above"></textarea>
         <mat-error *ngIf="inputControl.errors">
@@ -28,7 +28,7 @@ import { NumberInputElement, TextInputElement } from '../classes';
       <mat-form-field appearance="fill"
           *ngIf="elementAsTextInput.maxLines <= 1 || elementAsNumberInput.maxValue || elementAsNumberInput.minValue"
           [style.flex]="'0 1 25%'">
-        <input matInput [formControl]="inputControl" autocomplete="off"
+        <input matInput [formControl]="inputControl" autocomplete="off" (ngModelChange)="valueChanged($event)"
                [matTooltip]="elementData.helpText" matTooltipPosition="above"/>
         <mat-error *ngIf="inputControl.errors">
           {{inputControl.errors | errorTransform}}
@@ -42,7 +42,6 @@ import { NumberInputElement, TextInputElement } from '../classes';
 export class InputComponent extends ElementComponent implements OnInit, OnDestroy {
   @Input() elementData: NumberInputElement | TextInputElement;
   inputControl = new FormControl();
-  valueChangeSubscription: Subscription;
 
   get elementAsNumberInput(): NumberInputElement {
     return this.elementData as NumberInputElement;
@@ -63,20 +62,16 @@ export class InputComponent extends ElementComponent implements OnInit, OnDestro
     }
     if (this.elementData.required) myValidators.push(Validators.required);
     if (myValidators.length > 0) this.inputControl.setValidators(myValidators);
-    this.inputControl.setValue(this.elementData.value);
+    this.inputControl.setValue(this.elementData.value, { emitEvent: false });
     this.parentForm.addControl(this.elementData.id, this.inputControl);
-    this.valueChangeSubscription = this.inputControl.valueChanges.subscribe(() => {
-      if (this.inputControl.valid) {
-        this.elementData.value = this.inputControl.value;
-      } else {
-        this.elementData.value = '';
-      }
-      this.valueChange.emit(this.elementData.value);
-    });
   }
 
   ngOnDestroy(): void {
-    this.valueChangeSubscription.unsubscribe();
     this.parentForm.removeControl(this.elementData.id);
+  }
+
+  valueChanged($event: string) {
+    this.elementData.value = $event;
+    this.valueChange.emit();
   }
 }

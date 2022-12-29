@@ -43,7 +43,12 @@ export class PlayerToolbarComponent {
     input-text::V003::0::Bitte Begründung eingeben!::km/h::4
     hr
     input-text::V002::1::Bitte irgendwas anderes eingeben!
-    input-number::V002::1::Bitte ein Zahl eingeben!::kg::0::3
+    input-number::V005::1::Bitte ein Zahl eingeben!::kg::0::3
+    if-start::V005::2
+      text::V005 hat den Wert "2"
+    if-else
+      text::V005 hat nicht den Wert "2"
+    if-end
     `);
   }
 
@@ -61,6 +66,17 @@ export class PlayerToolbarComponent {
       checkbox::ch04::0::Greise
       checkbox::ch05::0::Hunde
     checkboxes-end
+    if-start::task162ahmfF::true
+      text::task162ahmfF ist angeklickt
+    if-else
+      text::task162ahmfF ist nicht angeklickt
+    if-end
+
+    if-start::ch02::true
+      text::ch02 ist angeklickt
+    if-else
+      text::ch02 ist nicht angeklickt
+    if-end
     `);
   }
 
