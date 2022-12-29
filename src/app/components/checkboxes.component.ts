@@ -48,6 +48,8 @@ export class CheckboxesComponent extends ElementComponent implements OnInit, OnD
         this.localForm.addControl(checkboxElement.id, formControl, { emitEvent: false });
         this.elements.push(checkboxElement);
         formControl.setValue(checkboxElement.value === 'true', { emitEvent: false });
+      } else if (checkboxElement instanceof ErrorElement) {
+        this.elements.push(checkboxElement);
       }
     });
   }

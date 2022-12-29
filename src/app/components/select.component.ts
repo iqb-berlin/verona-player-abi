@@ -2,7 +2,6 @@ import {
   Component, Input, OnDestroy, OnInit
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { ElementComponent } from './element.component';
 import { SelectionElement } from '../classes';
 
@@ -15,6 +14,7 @@ import { SelectionElement } from '../classes';
       </div>
       <mat-radio-group *ngIf="elementData.type === fieldType.MULTIPLE_CHOICE"
                        [style.flex]="'50'" class="fx-column-start-stretch" [formControl]="selectInputControl"
+                       (ngModelChange)="valueChanged($event)"
                        [matTooltip]="elementData.helpText" [matTooltipPosition]="'above'">
         <mat-radio-button *ngFor="let option of elementData.options; let i = index"
                           [value]="(i + 1).toString()">
@@ -28,6 +28,7 @@ import { SelectionElement } from '../classes';
       <mat-form-field [style.flex]="'50'"
         appearance="fill" *ngIf="elementData.type === fieldType.DROP_DOWN">
         <mat-select [formControl]="selectInputControl" placeholder="Bitte wählen"
+                    (ngModelChange)="valueChanged($event)"
                     [matTooltip]="elementData.helpText" [matTooltipPosition]="'above'">
           <mat-option *ngIf="!elementData.required" [value]=""></mat-option>
           <mat-option *ngFor="let option of elementData.options; let i = index" [value]="(i + 1).toString()">
@@ -44,23 +45,19 @@ import { SelectionElement } from '../classes';
 export class SelectComponent extends ElementComponent implements OnInit, OnDestroy {
   @Input() elementData: SelectionElement;
   selectInputControl = new FormControl();
-  valueChangeSubscription: Subscription;
 
   ngOnInit(): void {
     if (this.elementData.required) this.selectInputControl.setValidators(Validators.required);
-    if (this.elementData.value) this.selectInputControl.setValue(this.elementData.value);
+    this.selectInputControl.setValue(this.elementData.value, { emitEvent: false });
     this.parentForm.addControl(this.elementData.id, this.selectInputControl);
-    this.valueChangeSubscription = this.selectInputControl.valueChanges.subscribe(() => {
-      if (this.selectInputControl.valid) {
-        this.elementData.value = this.selectInputControl.value;
-      } else {
-        this.elementData.value = '';
-      }
-    });
   }
 
   ngOnDestroy(): void {
-    this.valueChangeSubscription.unsubscribe();
     this.parentForm.removeControl(this.elementData.id);
+  }
+
+  valueChanged($event: string) {
+    this.elementData.value = $event;
+    this.valueChange.emit();
   }
 }
