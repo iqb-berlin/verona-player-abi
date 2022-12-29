@@ -5,6 +5,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { CheckboxBlock, CheckboxElement, ErrorElement } from '../classes';
 import { InputElement } from '../classes/elements/input-element.class';
+import { VeronaResponseStatus } from '../verona/verona.interfaces';
 
 @Component({
   selector: 'player-checkboxes',
@@ -18,7 +19,8 @@ import { InputElement } from '../classes/elements/input-element.class';
           <div *ngIf="element.type === fieldType.SCRIPT_ERROR">
             {{element.text}} {{element.parameter}}
           </div>
-          <div *ngIf="element.type === fieldType.CHECKBOX">
+          <div *ngIf="element.type === fieldType.CHECKBOX"
+               IsInViewDetection (intersecting)="comingIntoView(element.id)">
             <mat-checkbox [formControlName]="element.id"
                           [matTooltip]="element.helpText"
                           (ngModelChange)="valueChanged(element.id, $event)"
@@ -68,6 +70,15 @@ export class CheckboxesComponent extends ElementComponent implements OnInit, OnD
     const myElement = this.elements.find(e => (e as InputElement).id === id);
     if (myElement) {
       (myElement as InputElement).value = $event ? 'true' : 'false';
+      (myElement as InputElement).status = VeronaResponseStatus.VALUE_CHANGED;
+      this.valueChange.emit();
+    }
+  }
+
+  comingIntoView(id: string) {
+    const myElement = this.elements.find(e => (e as InputElement).id === id);
+    if (myElement && (myElement as InputElement).status === VeronaResponseStatus.NOT_REACHED) {
+      (myElement as InputElement).status = VeronaResponseStatus.DISPLAYED;
       this.valueChange.emit();
     }
   }

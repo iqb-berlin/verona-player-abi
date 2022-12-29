@@ -1,3 +1,10 @@
+export enum VeronaResponseStatus {
+  UNSET = 'UNSET',
+  NOT_REACHED = 'NOT_REACHED',
+  DISPLAYED = 'DISPLAYED',
+  VALUE_CHANGED = 'VALUE_CHANGED'
+}
+
 export interface VeronaResponse {
   id: string;
   value: string;

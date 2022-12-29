@@ -1,11 +1,11 @@
 import { UIElement } from '../UIElement';
-import { VeronaResponse } from '../../verona/verona.interfaces';
+import { VeronaResponse, VeronaResponseStatus } from '../../verona/verona.interfaces';
 
 export abstract class InputElement extends UIElement {
   id: string;
   subform: string;
   value: string;
-  status = 'UNSET';
+  status = VeronaResponseStatus.NOT_REACHED;
   required = false;
   textBefore = '';
 
@@ -37,7 +37,7 @@ export abstract class InputElement extends UIElement {
   }
 
   getValues(): VeronaResponse[] {
-    if (this.hidden || !this.value) {
+    if (this.hidden) {
       return [];
     }
     return [{

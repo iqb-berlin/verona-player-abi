@@ -2,7 +2,7 @@ import {
   Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ParserService } from './parser.service';
 import { VeronaService } from './verona/verona.service';
@@ -16,7 +16,7 @@ import { SimpleBlock } from './classes';
     <form #playerContent [formGroup]="form">
       <div *ngFor="let element of rootBlock.elements" [style.margin]="'0px 30px'">
         <player-sub-form [elementData]="element" [parentForm]="form"
-                         (valueChange)="formValueChanged()"
+                         (valueChange)="valueChangesHappening.next($event)"
                          (navigationRequested)="navigationRequested($event);">
         </player-sub-form>
       </div>
@@ -32,6 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
   form = new FormGroup({});
   private ngUnsubscribe = new Subject<void>();
   isStandalone: boolean = window === window.parent;
+  valueChangesHappening = new Subject();
 
   constructor(public parserService: ParserService,
               private veronaService: VeronaService) {
@@ -61,6 +62,14 @@ export class AppComponent implements OnInit, OnDestroy {
           const presentationProgress = this.getPresentationProgress(window.scrollY);
         });
       });
+    this.valueChangesHappening
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        debounceTime(200)
+      )
+      .subscribe(() => {
+        this.formValueChanged();
+      });
   }
 
   private getPresentationProgress(scrolledY: number): ProgressValue {
@@ -72,6 +81,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   formValueChanged(): void {
     const allValues = this.rootBlock.getValues();
+    console.log(allValues);
     this.rootBlock.check(allValues); // { ...this.allValues, [event.id]: event.value });
     // this.allValues = this.rootBlock.getValues();
     // console.log('player: unit responses sent', this.allValues);

@@ -5,6 +5,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { ErrorElement, LikertBlock, LikertElement } from '../classes';
 import { InputElement } from '../classes/elements/input-element.class';
+import { VeronaResponseStatus } from '../verona/verona.interfaces';
 
 @Component({
   selector: 'player-likert',
@@ -22,7 +23,7 @@ import { InputElement } from '../classes/elements/input-element.class';
             {{element.text}} {{element.parameter}}
           </div>
           <div *ngIf="element.type === fieldType.LIKERT_ELEMENT"
-               class="fx-row-space-around-center">
+               class="fx-row-space-around-center" IsInViewDetection (intersecting)="comingIntoView(element.id)">
             <div [style.flex]="'40'" [matTooltip]="element.helpText">{{element.textBefore}}</div>
             <mat-radio-group [formControlName]="element.id" [style.flex]="'60'"
                              class="fx-row-space-around-center" (ngModelChange)="valueChanged(element.id, $event)">
@@ -79,6 +80,15 @@ export class LikertComponent extends ElementComponent implements OnInit, OnDestr
     const myElement = this.elements.find(e => (e as InputElement).id === id);
     if (myElement) {
       (myElement as InputElement).value = $event;
+      (myElement as InputElement).status = VeronaResponseStatus.VALUE_CHANGED;
+      this.valueChange.emit();
+    }
+  }
+
+  comingIntoView(id: string) {
+    const myElement = this.elements.find(e => (e as InputElement).id === id);
+    if (myElement && (myElement as InputElement).status === VeronaResponseStatus.NOT_REACHED) {
+      (myElement as InputElement).status = VeronaResponseStatus.DISPLAYED;
       this.valueChange.emit();
     }
   }

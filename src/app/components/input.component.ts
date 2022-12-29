@@ -4,11 +4,12 @@ import {
 import { FormControl, Validators } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { NumberInputElement, TextInputElement } from '../classes';
+import { VeronaResponseStatus } from '../verona/verona.interfaces';
 
 @Component({
   selector: 'player-input',
   template: `
-    <div class="fx-row-start-center">
+    <div class="fx-row-start-center" IsInViewDetection (intersecting)="comingIntoView()">
       <div [style.flex] ="'0 1 50%'" *ngIf="elementData.textBefore">
         {{elementData.textBefore}}
       </div>
@@ -72,6 +73,14 @@ export class InputComponent extends ElementComponent implements OnInit, OnDestro
 
   valueChanged($event: string) {
     this.elementData.value = $event;
+    this.elementData.status = VeronaResponseStatus.VALUE_CHANGED;
     this.valueChange.emit();
+  }
+
+  comingIntoView() {
+    if (this.elementData.status === VeronaResponseStatus.NOT_REACHED) {
+      this.elementData.status = VeronaResponseStatus.DISPLAYED;
+      this.valueChange.emit();
+    }
   }
 }

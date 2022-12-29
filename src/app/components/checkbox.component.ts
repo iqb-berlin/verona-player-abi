@@ -4,6 +4,7 @@ import {
 import { FormControl, Validators } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { CheckboxElement } from '../classes';
+import { VeronaResponseStatus } from '../verona/verona.interfaces';
 
 @Component({
   selector: 'player-checkbox',
@@ -12,7 +13,7 @@ import { CheckboxElement } from '../classes';
       <div [style.flex] ="'0 1 50%'" *ngIf="elementData.textBefore">
         {{elementData.textBefore}}
       </div>
-      <div [style.flex]="'50'">
+      <div [style.flex]="'50'" IsInViewDetection (intersecting)="comingIntoView()">
         <mat-checkbox [formControl]="checkboxControl"
                       [matTooltip]="elementData.helpText"
                       (ngModelChange)="valueChanged($event)"
@@ -44,6 +45,14 @@ export class CheckboxComponent extends ElementComponent implements OnInit, OnDes
 
   valueChanged($event: boolean) {
     this.elementData.value = $event ? 'true' : 'false';
+    this.elementData.status = VeronaResponseStatus.VALUE_CHANGED;
     this.valueChange.emit();
+  }
+
+  comingIntoView() {
+    if (this.elementData.status === VeronaResponseStatus.NOT_REACHED) {
+      this.elementData.status = VeronaResponseStatus.DISPLAYED;
+      this.valueChange.emit();
+    }
   }
 }

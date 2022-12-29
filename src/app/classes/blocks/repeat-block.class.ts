@@ -2,18 +2,18 @@ import { UIElement } from '../UIElement';
 import { UIBlock } from '../UIBlock';
 import { FieldType } from '../interfaces';
 import { SimpleBlock } from './simple-block.class';
-import { VeronaResponse } from '../../verona/verona.interfaces';
+import { VeronaResponse, VeronaResponseStatus } from '../../verona/verona.interfaces';
 
 export const SubformSeparator = '##';
 
 export class RepeatBlock extends UIBlock {
   id: string;
+  status = VeronaResponseStatus.NOT_REACHED;
   numberOfSubForms = 0;
   maxNumberOfSubForms = 10;
   numberOfSubFormsPrompt = '';
   headerText = 'Block';
   templateElements: UIElement[] = [];
-  localIDs = []; // array of IDs in the RepeatBlock, so IfBlocks can adjust their condition var
   get elementsAsSimpleBlocks(): SimpleBlock[] {
     return this.elements.map(e => e as SimpleBlock);
   }
@@ -59,7 +59,7 @@ export class RepeatBlock extends UIBlock {
   }
 
   getValues(): VeronaResponse[] {
-    if (this.hidden || this.numberOfSubForms === 0) return [];
+    if (this.hidden) return [];
     const values: VeronaResponse[] = [{
       id: this.id,
       subform: this.subform,
@@ -91,24 +91,4 @@ export class RepeatBlock extends UIBlock {
     }
     this.elements = newElements;
   }
-
-  /*
-  affixIfBlockConditionVariable(newElement: IfThenElseBlock, index: number): void {
-    if (this.localIDs.includes(newElement.conditionVariableName)) {
-      newElement.conditionVariableName += `_${(index + 1).toString()}`;
-    }
-    newElement.trueElements.forEach(element => {
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      if (element instanceof IfThenElseBlock) {
-        this.affixIfBlockConditionVariable(element, index);
-      }
-    });
-    newElement.falseElements.forEach(element => {
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      if (element instanceof IfThenElseBlock) {
-        this.affixIfBlockConditionVariable(element, index);
-      }
-    });
-  }
-   */
 }

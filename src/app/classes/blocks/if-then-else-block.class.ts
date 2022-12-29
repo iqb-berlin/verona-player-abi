@@ -38,7 +38,6 @@ export class IfThenElseBlock extends UIBlock {
   }
 
   check(values: VeronaResponse[]): void {
-    console.log(values);
     const mySubforms: string[] = this.subform ? this.subform.split(SubformSeparator) : [];
     let conditionVariableValue = '';
     let searchComplete = false;
@@ -54,8 +53,6 @@ export class IfThenElseBlock extends UIBlock {
         mySubforms.pop();
       }
     } while (!searchComplete);
-    console.log(this.conditionVariableName, this.subform);
-    console.log(this.conditionTrueValue, conditionVariableValue);
     if (this.conditionTrueValue === conditionVariableValue) {
       this.elements = this.trueElements;
       this.falseElements.forEach(e => {

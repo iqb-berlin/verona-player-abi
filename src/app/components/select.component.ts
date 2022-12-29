@@ -4,11 +4,13 @@ import {
 import { FormControl, Validators } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { SelectionElement } from '../classes';
+import { VeronaResponseStatus } from '../verona/verona.interfaces';
 
 @Component({
   selector: 'player-select',
   template: `
-    <div [class]="elementData.type === fieldType.MULTIPLE_CHOICE ? 'fx-row-start-start' : 'fx-row-start-center'">
+    <div [class]="elementData.type === fieldType.MULTIPLE_CHOICE ? 'fx-row-start-start' : 'fx-row-start-center'"
+         IsInViewDetection (intersecting)="comingIntoView()">
       <div [style.flex] ="'0 1 50%'" *ngIf="elementData.textBefore">
         {{elementData.textBefore}}
       </div>
@@ -58,6 +60,14 @@ export class SelectComponent extends ElementComponent implements OnInit, OnDestr
 
   valueChanged($event: string) {
     this.elementData.value = $event;
+    this.elementData.status = VeronaResponseStatus.VALUE_CHANGED;
     this.valueChange.emit();
+  }
+
+  comingIntoView() {
+    if (this.elementData.status === VeronaResponseStatus.NOT_REACHED) {
+      this.elementData.status = VeronaResponseStatus.DISPLAYED;
+      this.valueChange.emit();
+    }
   }
 }

@@ -2,7 +2,6 @@ import { UIElement } from './UIElement';
 import { VeronaResponse } from '../verona/verona.interfaces';
 
 export abstract class UIBlock extends UIElement {
-  status = 'UNSET';
   subform: string;
   elements: UIElement[] = [];
 

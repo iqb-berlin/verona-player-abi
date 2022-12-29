@@ -29,6 +29,7 @@ import {
 import { AppComponent } from './app.component';
 import { InputErrorPipe } from './components/input-error.pipe';
 import { PlayerToolbarComponent } from './player-toolbar.component';
+import { IsInViewDirective } from './is-in-view-components/is-in-view.directive';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { PlayerToolbarComponent } from './player-toolbar.component';
     LikertComponent,
     AppComponent,
     CheckboxesComponent,
-    PlayerToolbarComponent
+    PlayerToolbarComponent,
+    IsInViewDirective
   ],
   imports: [
     BrowserModule,
