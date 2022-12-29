@@ -17,8 +17,9 @@ export class RepeatBlock extends UIBlock {
   }
 
   constructor(subform: string, definitionLine?: string) {
-    super(subform, definitionLine);
+    super(subform);
     this.type = FieldType.REPEAT_BLOCK;
+    if (definitionLine) this.parseDefinition(definitionLine);
   }
 
   parseDefinition(definitionLine: string): string {

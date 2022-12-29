@@ -16,7 +16,7 @@ import { SimpleBlock, UIElement } from './classes';
     <form #playerContent [formGroup]="form">
       <div *ngFor="let element of rootBlock.elements" [style.margin]="'0px 30px'">
         <player-sub-form [elementData]="element" [parentForm]="form"
-                         (elementDataChange)="formValueChanged($event)"
+                         (valueChange)="formValueChanged()"
                          (navigationRequested)="navigationRequested($event);">
         </player-sub-form>
       </div>
@@ -71,8 +71,9 @@ export class AppComponent implements OnInit, OnDestroy {
     return 'some';
   }
 
-  formValueChanged(event: UIElement): void {
-    this.rootBlock.check([]); // { ...this.allValues, [event.id]: event.value });
+  formValueChanged(): void {
+    const allValues = this.rootBlock.getValues();
+    this.rootBlock.check(allValues); // { ...this.allValues, [event.id]: event.value });
     // this.allValues = this.rootBlock.getValues();
     // console.log('player: unit responses sent', this.allValues);
     // todo: send vopUnitStateChanged --> this.valueChanged.emit(JSON.stringify(this.allValues));

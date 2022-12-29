@@ -17,6 +17,9 @@ import { VeronaService } from './verona/verona.service';
       <button mat-menu-item (click)="script3()">
         Load Script3
       </button>
+      <button mat-menu-item (click)="script4()">
+        Load Script4
+      </button>
     </mat-menu>
   `,
   styles: [
@@ -73,5 +76,17 @@ export class PlayerToolbarComponent {
   likert::task2useE::Abschnitt 5: Speichern/Beenden
   likert-end
     `);
+  }
+
+  script4() {
+    this.veronaService.raiseNewStartCommandForTesting(`
+    iqb-scripted::1.0
+    title::Script 4 - Repeat
+    hr
+repeat-start::examineecount::Wie viele Prüflinge gibt es?::Angaben zu Prüfling::20??Sie können Angaben zu maximal 20 Prüflingen eintragen. Sollten sich im Kurs mehr als 20 Prüflinge befinden, ist eine Auswahl vorzunehmen. Diese Auswahl sollte so erfolgen, dass ein möglichst breites Leistungsspektrum abgebildet wird. Vermieden werden sollte eine selektive Berücksichtigung bzw. Nichtberücksichtigung bestimmter Gruppen (z. B. besonders leistungsschwache oder leistungsstarke Prüflinge, Schülerinnen und Schüler mit nichtdeutscher Herkunftssprache).
+    input-number::task1::1::Teilaufgabe 1::::0::10
+    input-number::task2::1::Teilaufgabe 2::::0::10
+    input-number::task3::1::Teilaufgabe 3::::0::10
+repeat-end    `);
   }
 }

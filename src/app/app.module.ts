@@ -23,12 +23,12 @@ import {
   InputComponent,
   TextComponent,
   NavButtonsComponent,
+  CheckboxesComponent,
   LikertComponent
 } from './components';
 import { AppComponent } from './app.component';
 import { InputErrorPipe } from './components/input-error.pipe';
 import { PlayerToolbarComponent } from './player-toolbar.component';
-import { CheckboxesComponent } from './components/checkboxes.component';
 
 @NgModule({
   declarations: [

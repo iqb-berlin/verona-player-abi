@@ -9,7 +9,7 @@ import { RepeatBlock } from '../classes';
   selector: 'player-repeat',
   template: `
     <div class="fx-row-space-between-center">
-      <div [style.flex]="'50'" *ngIf="elementData.numberOfSubFormsPrompt" [matTooltip]="elementData.headerText">
+      <div [style.flex]="'50'" *ngIf="elementData.numberOfSubFormsPrompt" [matTooltip]="elementData.helpText">
         {{elementData.numberOfSubFormsPrompt}}
       </div>
       <div [style.flex]="'50'" *ngIf="elementData.numberOfSubFormsPrompt"
@@ -21,7 +21,7 @@ import { RepeatBlock } from '../classes';
           </mat-error>
         </mat-form-field>
         <button type="button" mat-raised-button matTooltip="Neue Anzahl anwenden"
-                [disabled]="numberInputControl.invalid || elementData.numberOfSubForms === numberInputControl.value"
+                [disabled]="numberInputControl.invalid || elementData.numberOfSubForms === numberInputControl.value || !numberInputControl.value"
                 (click)="applyRepeatNumber()">
           Anwenden
         </button>
@@ -39,7 +39,7 @@ import { RepeatBlock } from '../classes';
         <ng-template matExpansionPanelContent>
           <div *ngFor="let e of elementList.elements">
             <player-sub-form [elementData]="e" [parentForm]="parentForm"
-                             (elementDataChange)="elementDataChange.emit($event)">
+                             (valueChange)="valueChange.emit()">
             </player-sub-form>
           </div>
         </ng-template>
