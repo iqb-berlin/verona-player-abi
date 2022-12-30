@@ -18,6 +18,7 @@ const UnitStateDataType = 'iqb-standard@1.1';
 })
 
 export class VeronaService {
+  enabledNavigationTargets: UnitNavigationTarget[] = [];
   private _navigationDenied = new Subject<string[]>();
   private _startCommand = new Subject<StartCommandData>();
   private _scrollY = new Subject<number>();
@@ -44,6 +45,7 @@ export class VeronaService {
                   unitState: [],
                   playerConfig: messageData.playerConfig
                 };
+                this.enabledNavigationTargets = returnStartCommandData.playerConfig.enabledNavigationTargets;
                 if (messageData.unitState && messageData.unitState.dataParts) {
                   returnStartCommandData.unitState = Object.keys(messageData.unitState.dataParts)
                     .map(k => {
@@ -77,7 +79,11 @@ export class VeronaService {
             break;
 
           default:
-            VeronaService.sendConsoleMessage_Warn(`unknown message type '${messageData.type}'`);
+            if (window === window.parent && messageData.type === 'vopWindowFocusChangedNotification') {
+              VeronaService.sendConsoleMessage_Info('got my own message "vopWindowFocusChangedNotification"');
+            } else {
+              VeronaService.sendConsoleMessage_Warn(`unknown message type '${messageData.type}'`);
+            }
         }
       });
 
@@ -162,17 +168,17 @@ export class VeronaService {
     }
   }
 
-  private static sendConsoleMessage_Info(messageText: string): void {
+  static sendConsoleMessage_Info(messageText: string): void {
     // eslint-disable-next-line no-console
     console.info(`%cplayer:%c ${messageText}`, 'color: green', 'color: black');
   }
 
-  private static sendConsoleMessage_Warn(messageText: string): void {
+  static sendConsoleMessage_Warn(messageText: string): void {
     // eslint-disable-next-line no-console
     console.warn(`%cplayer: %c ${messageText}`, 'color: green', 'color: black');
   }
 
-  private static sendConsoleMessage_Error(messageText: string): void {
+  static sendConsoleMessage_Error(messageText: string): void {
     // eslint-disable-next-line no-console
     console.error(`%cplayer: %c ${messageText}`, 'color: green', 'color: black');
   }
@@ -193,6 +199,7 @@ export class VeronaService {
         directDownloadUrl: ''
       }
     };
+    this.enabledNavigationTargets = startCommandData.playerConfig.enabledNavigationTargets;
     this._startCommand.next(startCommandData);
   }
 }

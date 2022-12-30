@@ -12,7 +12,7 @@ title::Testscript Title??Hilfetext1
 header::Abschnitt 1 Basic Elements??Hilfetext1
 header
 text::Standard Text Element??Hilfetext1
-html::HTML Element with <strong>strong</strong> text and hyperlink: <a href=”https://www.iqb.hu-berlin.de”>IQB website</a>??Hilfetext1
+html:: <strong>Strong</strong> text and hyperlink: <a href=”https://www.iqb.hu-berlin.de”>IQB website</a>??Hilfetext1
 hr
 rem::Kommentar. Soll nicht erscheinen!
 header::Abschnitt 2 Eingabeelemente
@@ -57,12 +57,16 @@ nav-button-group::previous##next##first##last##end`;
     <button mat-fab [matMenuTriggerFor]="menu" matTooltip="Load/Save..." matTooltipPosition="above">
       <mat-icon>menu</mat-icon>
     </button>
+    <input #fileInputUnit type="file" hidden="hidden" (change)="uploadUnitFile($event)">
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="scriptDialogBox()">
         input script
       </button>
+      <button mat-menu-item (click)="fileInputUnit.click()">
+        load script file
+      </button>
       <button mat-menu-item (click)="check()">
-        Check Form Valid
+        check if form valid
       </button>
     </mat-menu>
   `,
@@ -99,92 +103,20 @@ export class PlayerToolbarComponent {
     ));
   }
 
-  script2() {
-    this.veronaService.raiseNewStartCommandForTesting(`
-    iqb-scripted::1.0
-    title::Script 2 - Selection
-    checkbox::task162ahmfF::0::Sie fühlen sich beunruhigt
-    multiple-choice::task3wtrtimeS::1::Ich fühle mich heute großartig::trifft gar nicht zu##trifft eher nicht zu##trifft eher zu##trifft voll zu
-    drop-down::ta33S::1::Ich fühlte mich gestern großartig::trifft gar nicht zu##trifft eher nicht zu##trifft eher zu##trifft voll zu
-    checkboxes-start::Ich habe in meiner Verwandtschaft??düdü
-      checkbox::ch01::0::Frauen
-      checkbox::ch02::0::Männer
-      checkbox::ch03::0::Kinder
-      checkbox::ch04::0::Greise
-      checkbox::ch05::0::Hunde
-    checkboxes-end
-    if-start::task162ahmfF::true
-      text::"Sie fühlen sich beunruhigt" ist angeklickt
-    if-else
-      text::"Sie fühlen sich beunruhigt" ist nicht angeklickt
-    if-end
-
-    if-start::ch02::true
-      text::"Männer" ist angeklickt
-    if-else
-      text::"Männer" ist nicht angeklickt
-    if-end
-
-    if-start::task3wtrtimeS::2
-      text::Bei "heute" ist Option 2 gewählt
-    if-else
-      text::Bei "heute" ist Option 2 nicht gewählt
-    if-end
-
-    if-start::ta33S::3
-      text::Bei "gestern" ist Option 3 gewählt
-    if-else
-      text::Bei "gestern" ist Option 3 nicht gewählt
-    if-end
-    `);
-  }
-
-  script3() {
-    this.veronaService.raiseNewStartCommandForTesting(`
-    iqb-scripted::1.0
-    title::Script 3 - Likert
-  likert-start::sehr hilfreich##eher hilfreich##teilweise hilfreich##eher nicht hilfreich##nicht hilfreich
-  likert::task2useA::Abschnitt 1: Einleitung
-  likert::task2useB::Abschnitt 2: Starten der Computer
-  likert::task2useC::Abschnitt 3: Anmeldung
-  likert::task2useD::Abschnitt 4: Steuerung über Testleitungskonsole
-  likert::task2useE::Abschnitt 5: Speichern/Beenden
-  likert-end
-    if-start::task2useC::3
-      text::Bei "Abschnitt 3: Anmeldung" ist Option 3 gewählt
-    if-else
-      text::Bei "Abschnitt 3: Anmeldung" ist Option 3 nicht gewählt
-    if-end
-    `);
-  }
-
-  script4() {
-    this.veronaService.raiseNewStartCommandForTesting(`
-    iqb-scripted::1.0
-    title::Script 4 - Repeat
-    checkbox::task162ahmfF::0::Ihre Lieblingsfarbe ist Gelb.
-    hr
-repeat-start::examinees::Wie viele Prüflinge gibt es?::Angaben zu Prüfling::20??Sie können Angaben zu maximal 20 Prüflingen eintragen. Sollten sich im Kurs mehr als 20 Prüflinge befinden, ist eine Auswahl vorzunehmen. Diese Auswahl sollte so erfolgen, dass ein möglichst breites Leistungsspektrum abgebildet wird. Vermieden werden sollte eine selektive Berücksichtigung bzw. Nichtberücksichtigung bestimmter Gruppen (z. B. besonders leistungsschwache oder leistungsstarke Prüflinge, Schülerinnen und Schüler mit nichtdeutscher Herkunftssprache).
-    input-number::task1::1::Teilaufgabe 1::::0::10
-    input-number::task2::1::Teilaufgabe 2::::0::10
-    input-number::task3::1::Teilaufgabe 3::::0::10
-    checkbox::task162ahmfF::0::Ihre Lieblingsfarbe ist Gelb.
-
-    if-start::task3::3
-      text::Bei "Teilaufgabe 3" wurde "3" eingetragen.
-    if-else
-      text::Bei "Teilaufgabe 3" wurde "3" nicht eingetragen.
-    if-end
-
-    if-start::task162ahmfF::true
-      text::"Lieblingsfarbe" wurde angekreuzt.
-    if-else
-      text::"Lieblingsfarbe" wurde nicht angekreuzt.
-    if-end
-repeat-end    `);
+  uploadUnitFile(fileInputEvent: Event): void {
+    const target = fileInputEvent.target as HTMLInputElement;
+    if (target && target.files && target.files.length > 0) {
+      const fileToUpload = target.files[0];
+      const myReader = new FileReader();
+      myReader.onload = e => {
+        this.lastScript = e.target ? (e.target.result as string) : '';
+        this.veronaService.raiseNewStartCommandForTesting(this.lastScript);
+      };
+      myReader.readAsText(fileToUpload);
+    }
   }
 
   check() {
-    console.log(this.parentForm.valid);
+    VeronaService.sendConsoleMessage_Info(this.parentForm.valid ? 'Form is valid' : 'Form is not valid');
   }
 }
