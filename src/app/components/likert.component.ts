@@ -1,36 +1,33 @@
 import {
-  Component, OnDestroy, OnInit, ViewEncapsulation
+  Component, Input, OnDestroy, OnInit, ViewEncapsulation
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ElementComponent } from './element.component';
-import { LikertBlock } from '../classes/UIBlock';
-import {LikertElement} from "../classes/UIElement";
+import { ErrorElement, LikertBlock, LikertElement } from '../classes';
+import { InputElement } from '../classes/elements/input-element.class';
+import { VeronaResponseStatus } from '../verona/verona.interfaces';
 
 @Component({
   selector: 'player-likert',
   template: `
-    <mat-card fxLayout="column" fxLayoutAlign="start stretch">
-      <div fxLayout="row" fxLayoutAlign="space-between center">
-        <div fxFlex="40">&nbsp;</div>
-        <div fxFlex="60" fxLayout="row" fxLayoutAlign="space-around center">
-          <div *ngFor="let header of elementDataAsLikertBlock.headerList"
-               fxFlex fxLayout="row" fxLayoutAlign="center center">{{ header }}</div>
+    <mat-card class="fx-column-start-stretch">
+      <div class="fx-row-space-between-center likert-header">
+        <div [style.flex]="'40'">&nbsp;</div>
+        <div [style.flex]="'60'" class="fx-row-space-around-center">
+          <div *ngFor="let header of headerList" class="fx-row-center-center">{{header}}</div>
         </div>
       </div>
-      <mat-card-content fxLayout="column" fxLayoutAlign="start stretch">
-        <div *ngFor="let element of elementDataAsLikertBlock.elements"
-             [formGroup]="parentForm" fxLayout="column" class="likert-row" >
-          <div *ngIf="element.fieldType == fieldType.SCRIPT_ERROR">
-            {{element.errorText}}
+      <mat-card-content class="fx-column-start-stretch" [formGroup]="localForm">
+        <div *ngFor="let element of elements" class="likert-row">
+          <div *ngIf="element.type === fieldType.SCRIPT_ERROR">
+            {{element.text}} {{element.parameter}}
           </div>
-          <div *ngIf="element.fieldType !== fieldType.SCRIPT_ERROR" fxLayout="row" fxLayoutAlign="space-between center">
-            <div fxFlex="40" [matTooltip]="element.helpText">{{element.text}}</div>
-            <mat-radio-group [formControlName]="element.id" fxFlex="60"
-                             fxLayout="row" fxLayoutAlign="space-around center">
-              <mat-radio-button fxFlex [value]="header"
-                                *ngFor="let header of elementDataAsLikertBlock.headerList;let i=index;"
-                                [formControlName]="element.id" ngDefaultControl>
+          <div *ngIf="element.type === fieldType.LIKERT_ELEMENT"
+               class="fx-row-space-around-center" IsInViewDetection (intersecting)="comingIntoView(element.id)">
+            <div [style.flex]="'40'" [matTooltip]="element.helpText">{{element.textBefore}}</div>
+            <mat-radio-group [formControlName]="element.id" [style.flex]="'60'"
+                             class="fx-row-space-around-center" (ngModelChange)="valueChanged(element.id, $event)">
+              <mat-radio-button *ngFor="let header of headerList; let i = index" [value]="(i + 1).toString()">
               </mat-radio-button>
             </mat-radio-group>
           </div>
@@ -39,44 +36,60 @@ import {LikertElement} from "../classes/UIElement";
     </mat-card>
   `,
   styles: [
-    '.mat-radio-label {flex-direction: row; place-content: center center}',
+    '.likert-header {min-height: 40px}',
     '.likert-row:nth-child(even) {background-color: #F5F5F5;}',
     '.likert-row:nth-child(odd) {background-color: lightgrey;}',
-    '.likert-row {padding: 4px}'
+    '.likert-row {padding: 2px 10px}'
   ],
   encapsulation: ViewEncapsulation.None
 })
 
 export class LikertComponent extends ElementComponent implements OnInit, OnDestroy {
-  formControls = [];
-  valueChangeSubscriptions: Subscription[] = [];
+  localForm = new FormGroup({});
+  localFormId = Math.floor(Math.random() * 20000000 + 10000000).toString();
+  headerList: string[];
+  elements: (LikertElement | ErrorElement)[];
 
-  ngOnInit(): void {
-    const elementData = this.elementData as LikertBlock;
-    elementData.elements.forEach(likertElement => {
+  @Input()
+  set elementData(value: LikertBlock) {
+    this.elements = [];
+    this.headerList = value.headerList;
+    value.elements.forEach(likertElement => {
       if (likertElement instanceof LikertElement) {
-        const formControl = new FormControl(likertElement.id);
-        this.formControls.push(formControl);
-        this.parentForm.addControl(likertElement.id, formControl);
-        formControl.valueChanges.subscribe(newValue => {
-          formControl.markAsTouched();
-          likertElement.value = String(newValue);
-          // Need to manually emit this, since the LikertBlock has no value prop to set and trigger the parent method
-          this.elementDataChange.emit(likertElement);
-        });
-        if (likertElement.value) {
-          formControl.setValue(likertElement.value);
-        }
+        const formControl = new FormControl();
+        formControl.setValue(likertElement.value, { emitEvent: false });
+        this.localForm.addControl(likertElement.id, formControl);
+        this.elements.push(likertElement);
+      } else if (likertElement instanceof ErrorElement) {
+        this.elements.push(likertElement);
       }
     });
   }
 
+  ngOnInit() {
+    setTimeout(() => {
+      this.parentForm.addControl(this.localFormId, this.localForm);
+    });
+  }
+
   ngOnDestroy(): void {
-    this.valueChangeSubscriptions.forEach(subscription => {
-      subscription.unsubscribe();
-    });
-    this.formControls.forEach(formControl => {
-      this.parentForm.removeControl(formControl);
-    });
+    this.parentForm.removeControl(this.localFormId);
+  }
+
+  valueChanged(id: string, $event: string) {
+    const myElement = this.elements.find(e => (e as InputElement).id === id);
+    if (myElement) {
+      (myElement as InputElement).value = $event;
+      (myElement as InputElement).status = VeronaResponseStatus.VALUE_CHANGED;
+      this.valueChange.emit();
+    }
+  }
+
+  comingIntoView(id: string) {
+    const myElement = this.elements.find(e => (e as InputElement).id === id);
+    if (myElement && (myElement as InputElement).status === VeronaResponseStatus.NOT_REACHED) {
+      (myElement as InputElement).status = VeronaResponseStatus.DISPLAYED;
+      this.valueChange.emit();
+    }
   }
 }

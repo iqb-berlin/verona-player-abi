@@ -2,12 +2,68 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>PlayerComponent</title>
+  <title>Abi-Player</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="shortcut icon" href="">
+  <link rel="shortcut icon" href="#">
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <script id="verona-metadata" type="application/ld+json">
+    {
+      "$schema": "https://raw.githubusercontent.com/verona-interfaces/metadata/master/verona-module-metadata.json",
+      "id": "iqb-player-abi",
+      "version": "4.0.0-beta",
+      "specVersion": "5.0",
+      "metadataVersion": "2.0",
+      "type": "player",
+      "name": [
+        {
+          "lang": "en",
+          "value": "IQB player for script language"
+        },
+        {
+          "lang": "de",
+          "value": "IQB-Player für Skripte (Abi)"
+        }
+      ],
+      "description": [
+        {
+          "lang": "de",
+          "value": "Dieser Player interpretiert eine Script-Sprache, die speziell für die effiziente Erstellung umfangreicher Befragungen entwickelt wurde. Über die gängigen Frageformate hinaus werden bedingte Formularblöcke, dynamische Wiederholungen von Blöcken und Likert-skalen unterstützt."
+        },
+        {
+          "lang": "en",
+          "value": "You can use this Verona Player for surveys where you need a large number of questions. By interpreting it's own script language, the player just need one line per control definition. You can setup conditional blocks, repeating blocks or likert scale tables."
+        }
+      ],
+      "notSupportedFeatures": [
+        "log-policy",
+        "paging-mode"
+      ],
+      "maintainer": {
+        "name": [
+          {
+            "lang": "en",
+            "value": "IQB - Institute for Educational Quality Improvement."
+          },
+          {
+            "lang": "de",
+            "value": "IQB - Institut zur Qualitätsentwicklung im Bildungswesen."
+          }
+        ],
+        "url": "https://www.iqb.hu-berlin.de",
+        "email": "iqb-tbadev@hu-berlin.de"
+      },
+      "code": {
+        "repositoryType": "git",
+        "licenseType": "MIT",
+        "licenseUrl": "https://opensource.org/licenses/MIT",
+        "repositoryUrl": "https://github.com/iqb-berlin/verona-player-abi"
+      }
+    }
+  </script>
 </head>
 <body>
   <app-root></app-root>

@@ -1,13 +1,5 @@
-export enum PropertyKey {
-  TEXT,
-  TEXT2,
-  MAX_VALUE,
-  MIN_VALUE,
-  MAX_LENGTH,
-  LINES_NUMBER
-}
-
 export enum FieldType {
+  UNSET,
   TEXT,
   HEADER,
   TITLE,
@@ -18,19 +10,14 @@ export enum FieldType {
   CHECKBOX,
   MULTIPLE_CHOICE,
   DROP_DOWN,
-  REPEAT_CONTROL,
   SCRIPT_ERROR,
   NAV_BUTTON_GROUP,
-  LIKERT_ELEMENT
-}
-
-export interface KeyValuePairString {
-  [K: string]: string;
-}
-
-export interface StartData {
-  unitDefinition: string;
-  unitStateData: string;
+  LIKERT_ELEMENT,
+  LIKERT_BLOCK,
+  IFTHENELSE_BLOCK,
+  REPEAT_BLOCK,
+  SIMPLE_BLOCK,
+  CHECKBOX_BLOCK
 }
 
 export enum NavButtonOptions {

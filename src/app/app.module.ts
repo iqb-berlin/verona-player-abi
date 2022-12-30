@@ -1,8 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { Injector, NgModule } from '@angular/core';
-import { createCustomElement } from '@angular/elements';
+import { NgModule } from '@angular/core';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -16,17 +14,24 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 
 // TODO move components into component dir. no reason to have sub dirs with one file
-import { SubFormComponent } from './components/sub-form/sub-form.component';
-import { RepeatComponent } from './components/repeat/repeat.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDialogModule } from '@angular/material/dialog';
+import {
+  SubFormComponent,
+  RepeatComponent,
+  SelectComponent,
+  CheckboxComponent,
+  InputComponent,
+  TextComponent,
+  NavButtonsComponent,
+  CheckboxesComponent,
+  LikertComponent
+} from './components';
+import { AppComponent } from './app.component';
 import { InputErrorPipe } from './components/input-error.pipe';
-import { SelectComponent } from './components/select/select.component';
-import { CheckboxComponent } from './components/checkbox/checkbox.component';
-import { InputComponent } from './components/input/input.component';
-import { TextComponent } from './components/text/text.component';
-import { NavButtonsComponent } from './components/nav-buttons/nav-buttons.component';
-import { LikertComponent } from './components/likert.component';
-
-import { PlayerComponent } from './player.component';
+import { PlayerToolbarComponent } from './toolbar/player-toolbar.component';
+import { IsInViewDirective } from './is-in-view-components/is-in-view.directive';
+import { InputScriptDialog } from './toolbar/input-script-dialog.component';
 
 @NgModule({
   declarations: [
@@ -39,14 +44,17 @@ import { PlayerComponent } from './player.component';
     SubFormComponent,
     NavButtonsComponent,
     LikertComponent,
-    PlayerComponent
+    AppComponent,
+    CheckboxesComponent,
+    PlayerToolbarComponent,
+    IsInViewDirective,
+    InputScriptDialog
   ],
   imports: [
     BrowserModule,
     NoopAnimationsModule,
     MatButtonModule,
     MatInputModule,
-    FlexLayoutModule,
     MatTooltipModule,
     FormsModule,
     MatCheckboxModule,
@@ -55,16 +63,10 @@ import { PlayerComponent } from './player.component';
     ReactiveFormsModule,
     MatExpansionModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    MatMenuModule,
+    MatDialogModule
   ],
-  entryComponents: [
-    PlayerComponent
-  ]
+  bootstrap: [AppComponent]
 })
-export class AppModule {
-  constructor(private injector: Injector) {}
-  ngDoBootstrap(): void {
-    const playerElement = createCustomElement(PlayerComponent, { injector: this.injector });
-    customElements.define('player-component', playerElement);
-  }
-}
+export class AppModule { }
