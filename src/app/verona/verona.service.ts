@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { fromEvent, Observable, Subject } from 'rxjs';
 import {
-  ChunkData,
-  ProgressValue,
-  StartCommandData,
-  UnitNavigationTarget,
-  VeronaResponse
+  ChunkData, ProgressValue, StartCommandData, UnitNavigationTarget, VeronaResponse
 } from './verona.interfaces';
 
 interface LocalUnitState {
@@ -114,14 +110,14 @@ export class VeronaService {
   }
 
   requestUnitNavigation(target: UnitNavigationTarget) {
-    if (window.parent) {
+    if (window === window.parent) {
+      VeronaService.sendConsoleMessage_Info(`vopUnitNavigationRequestedNotification "${target}" sent`);
+    } else {
       window.parent.postMessage({
         type: 'vopUnitNavigationRequestedNotification',
         sessionId: this.sessionId,
         target: target
       }, '*');
-    } else {
-      VeronaService.sendConsoleMessage_Info(`vopUnitNavigationRequestedNotification "${target}" sent`);
     }
   }
 
@@ -151,16 +147,18 @@ export class VeronaService {
 
   static sendReadyNotification() {
     const playerMetadataElement = document.querySelector('#verona-metadata');
-    if (window.parent) {
+    if (window === window.parent) {
+      if (playerMetadataElement) {
+        VeronaService.sendConsoleMessage_Info('ReadyNotification with metadata');
+      } else {
+        VeronaService.sendConsoleMessage_Warn('ReadyNotification (no metadata found)');
+      }
+    } else {
       window.parent.postMessage({
         type: 'vopReadyNotification',
         metadata: JSON.parse(playerMetadataElement ? playerMetadataElement.innerHTML : '{}'),
         apiVersion: '4' // to be backwards-compatible with the Teststudio-lite as of January 22
       }, '*');
-    } else if (playerMetadataElement) {
-      VeronaService.sendConsoleMessage_Info('ReadyNotification with metadata');
-    } else {
-      VeronaService.sendConsoleMessage_Warn('ReadyNotification (no metadata found)');
     }
   }
 

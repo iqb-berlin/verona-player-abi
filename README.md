@@ -9,11 +9,10 @@ IQB´s verona-player-abi is a software component which runs unit definitions ins
 compliant web applications. The main target for this player are surveys. Unit
 definitions are written as simple text scripts.
 
-* [Script syntax](docs/syntax.md) (German only)
-* [Response format](docs/key-value.md) (German only)
-
-
 ## Using the Player
+
+To learn more about using the player [read here](https://github.com/iqb-berlin/verona-player-abi/wiki) (German only). 
+
 * You need a Verona host system to run this software, for example the
 [IQB-Testcenter](https://github.com/iqb-berlin/testcenter-setup) or the
 [Verona-Player-Testbed](https://github.com/iqb-berlin/verona-player-testbed).
@@ -28,16 +27,16 @@ This player is an Angular web application. After cloning this repository, you ne
 npm install
 ```
 
+After install of all required components, `ng serve` will start the player. You get a simple helper menu to load unit definitions.
+
 ### Build Verona Player Html File
 The Verona Interface Specification requires all programming to be built in one single html file. All styles and images need to be packed in one file.
 ```
 npm run build
 ```
-This way, the Angular application is set up as custom element and will be placed inside a Html file. You get the HTML file in the *dist* directory, named `iqb-player-abi@<version>.html`.
+This way, the Angular application is built into the folder `dist` and then packed into the file `docs/index.html`. This way, one can try out the player via GitHub pages. The helper menu will show up when the player is started without host.
 
-### Build Html variant with upload buttons for tests 
-There is one distribution variant to load and check unit definitions easily: 
-```
-npm run build -- dev
-```
-The wrapper will not support Verona communication spec. You still get one single html file, but with one button to load script files. This way, you can check the player and unit definitions without a server. Just load the html file locally into your browser. 
+### Release
+
+Please copy the `docs/index.html` file locally, rename it to `verona-player-abi-<version>.html` 
+and load it as artefact into the release.
