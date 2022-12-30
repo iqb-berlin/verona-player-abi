@@ -2,10 +2,12 @@ import {
   Component, EventEmitter, Input, Output
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { VeronaService } from './verona/verona.service';
+import { MatDialog } from '@angular/material/dialog';
+import { lastValueFrom, map } from 'rxjs';
+import { VeronaService } from '../verona/verona.service';
+import { InputScriptDialog } from './input-script-dialog.component';
 
-const testScript1 = `
-iqb-scripted::1.0
+const testScript1 = `iqb-scripted::1.0
 title::Testscript Title??Hilfetext1
 header::Abschnitt 1 Basic Elements??Hilfetext1
 header
@@ -31,21 +33,21 @@ if-start::mc_var1::1
 if-else
   text::NOT Choice1
 if-end
-repeat-start::examineecount::Wie viele Prüflinge gibt es?::Angaben zu Prüfling::20
+repeat-start::examinee1::Wie viele Prüflinge gibt es?::Angaben zu Prüfling::20
   text::Repeat Inhalt
   if-start::check_var1::true
     text::Checked
   if-end
 repeat-end
-repeat-start::examineecount::Wie viele Prüflinge gibt es?::Angaben zu Prüfling::20
+repeat-start::examinee2::Wie viele Prüflinge gibt es?::Angaben zu Prüfling::20
   text::Repeat Inhalt
-  repeat-start::examineecount::Wie viele Prüflinge gibt es2?::Angaben zu Prüfling::20
+  repeat-start::examinee3::Wie viele Prüflinge gibt es2?::Angaben zu Prüfling::20
     text::Repeat Inhalt2
   repeat-end
 repeat-end
 likert-start::trifft gar nicht zu##trifft eher nicht zu##trifft eher zu##trifft voll zu
-    likert1::iqb-scripted ist toll
-    likert2::simple player unit Definition ist toll
+    likert::LI001::iqb-scripted ist toll
+    likert::LI002::simple player unit Definition ist toll
 likert-end
 nav-button-group::previous##next##first##last##end`;
 
@@ -56,20 +58,11 @@ nav-button-group::previous##next##first##last##end`;
       <mat-icon>menu</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="script1()">
-        Load Script1
-      </button>
-      <button mat-menu-item (click)="script2()">
-        Load Script2
-      </button>
-      <button mat-menu-item (click)="script3()">
-        Load Script3
-      </button>
-      <button mat-menu-item (click)="script4()">
-        Load Script4
+      <button mat-menu-item (click)="scriptDialogBox()">
+        input script
       </button>
       <button mat-menu-item (click)="check()">
-        Check
+        Check Form Valid
       </button>
     </mat-menu>
   `,
@@ -80,28 +73,30 @@ nav-button-group::previous##next##first##last##end`;
 export class PlayerToolbarComponent {
   @Input() parentForm: FormGroup;
   @Output() toggleDrawerClick = new EventEmitter();
+  private lastScript = '';
 
   constructor(
-    private veronaService: VeronaService
+    private veronaService: VeronaService,
+    private inputScriptDialog: MatDialog
   ) { }
 
-  script1() {
-    this.veronaService.raiseNewStartCommandForTesting(`
-    iqb-scripted::1.0
-    title::Test-Script 1 - Input Text & Number
-    html::Melden Sie sich beim <a href="https://www.iqb.hu-berlin.de" target="_blank">IQB</a> oder woanders!
-    hr
-    input-text::V001::0::Bitte Begründung eingeben!::::15
-    input-text::V003::0::Bitte Begründung eingeben!::km/h::4
-    hr
-    input-text::V002::1::Bitte irgendwas anderes eingeben!
-    input-number::V005::1::Bitte ein Zahl eingeben!::kg::0::3
-    if-start::V005::2
-      text::V005 hat den Wert "2"
-    if-else
-      text::V005 hat nicht den Wert "2"
-    if-end
-    `);
+  scriptDialogBox() {
+    const dialogRef = this.inputScriptDialog.open(InputScriptDialog, {
+      width: '600px',
+      height: '700px',
+      data: this.lastScript || testScript1
+    });
+    return lastValueFrom(dialogRef.afterClosed().pipe(
+      map(dialogResult => {
+        if (dialogResult === true) {
+          const dialogComponent = dialogRef.componentInstance;
+          this.lastScript = dialogComponent.scriptText;
+          this.veronaService.raiseNewStartCommandForTesting(this.lastScript);
+        }
+        return false;
+      })
+
+    ));
   }
 
   script2() {

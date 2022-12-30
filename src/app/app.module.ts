@@ -15,6 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 
 // TODO move components into component dir. no reason to have sub dirs with one file
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDialogModule } from '@angular/material/dialog';
 import {
   SubFormComponent,
   RepeatComponent,
@@ -28,8 +29,9 @@ import {
 } from './components';
 import { AppComponent } from './app.component';
 import { InputErrorPipe } from './components/input-error.pipe';
-import { PlayerToolbarComponent } from './player-toolbar.component';
+import { PlayerToolbarComponent } from './toolbar/player-toolbar.component';
 import { IsInViewDirective } from './is-in-view-components/is-in-view.directive';
+import { InputScriptDialog } from './toolbar/input-script-dialog.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,8 @@ import { IsInViewDirective } from './is-in-view-components/is-in-view.directive'
     AppComponent,
     CheckboxesComponent,
     PlayerToolbarComponent,
-    IsInViewDirective
+    IsInViewDirective,
+    InputScriptDialog
   ],
   imports: [
     BrowserModule,
@@ -61,7 +64,8 @@ import { IsInViewDirective } from './is-in-view-components/is-in-view.directive'
     MatExpansionModule,
     MatIconModule,
     MatCardModule,
-    MatMenuModule
+    MatMenuModule,
+    MatDialogModule
   ],
   bootstrap: [AppComponent]
 })

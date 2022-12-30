@@ -64,6 +64,7 @@ export class ParserService {
         const restOfLine = lineSplits.join('::');
         let keywordInBlock = '';
         let restOfLineInBlock = '';
+        let nestingLevel = 0;
         let endOfBlockMarkerFound = false;
         let lineBuffer: string[] = [];
         let newElement: UIElement;
@@ -171,25 +172,34 @@ export class ParserService {
             case 'repeat-start':
               lineBuffer = [];
               endOfBlockMarkerFound = false;
+              nestingLevel = 0;
               while (!endOfBlockMarkerFound && (blockLines.length > 0)) {
                 lineSplits = blockLines.shift().split('::');
                 keywordInBlock = lineSplits.shift().trim().toLowerCase();
                 restOfLineInBlock = lineSplits.join('::');
                 if (keywordInBlock === 'repeat-end') {
-                  if (lineBuffer.length > 0) {
-                    newElement = new RepeatBlock(subform, restOfLine);
-                    (newElement as RepeatBlock).templateElements = ParserService.parseScriptLineBlock(
-                      `${subform ? `${subform}##` : ''}${(newElement as RepeatBlock).id}`, lineNumber, lineBuffer
-                    );
-                    (newElement as RepeatBlock).templateElements.push(
-                      ...ParserService.checkForMultipleIds((newElement as RepeatBlock).templateElements)
-                    );
-                    lineNumber += lineBuffer.length;
-                    returnElements.push(newElement);
+                  if (nestingLevel > 0) {
+                    nestingLevel -= 1;
+                    lineBuffer.push(`repeat-end::${restOfLineInBlock}`);
                   } else {
-                    returnElements.push(new ErrorElement('script-error.empty-repeat-block'));
+                    if (lineBuffer.length > 0) {
+                      newElement = new RepeatBlock(subform, restOfLine);
+                      (newElement as RepeatBlock).templateElements = ParserService.parseScriptLineBlock(
+                        `${subform ? `${subform}##` : ''}${(newElement as RepeatBlock).id}`, lineNumber, lineBuffer
+                      );
+                      (newElement as RepeatBlock).templateElements.push(
+                        ...ParserService.checkForMultipleIds((newElement as RepeatBlock).templateElements)
+                      );
+                      lineNumber += lineBuffer.length;
+                      returnElements.push(newElement);
+                    } else {
+                      returnElements.push(new ErrorElement('script-error.empty-repeat-block'));
+                    }
+                    endOfBlockMarkerFound = true;
                   }
-                  endOfBlockMarkerFound = true;
+                } else if (keywordInBlock === 'repeat-start') {
+                  nestingLevel += 1;
+                  lineBuffer.push(`repeat-start::${restOfLineInBlock}`);
                 } else {
                   lineBuffer.push(`${keywordInBlock}::${restOfLineInBlock}`);
                 }
@@ -200,31 +210,45 @@ export class ParserService {
             case 'if-start':
               lineBuffer = [];
               endOfBlockMarkerFound = false;
+              nestingLevel = 0;
               newElement = null;
               while (!endOfBlockMarkerFound && (blockLines.length > 0)) {
                 lineSplits = blockLines.shift().split('::');
                 keywordInBlock = lineSplits.shift().trim().toLowerCase();
                 restOfLineInBlock = lineSplits.join('::');
-                if (keywordInBlock === 'if-else') {
-                  newElement = new IfThenElseBlock(subform, restOfLine);
-                  (newElement as IfThenElseBlock).trueElements =
-                    ParserService.parseScriptLineBlock(subform, lineNumber, lineBuffer);
-                  lineNumber += lineBuffer.length;
-                  returnElements.push(newElement);
-                  lineBuffer = [];
-                } else if (keywordInBlock === 'if-end') {
-                  if (newElement) {
-                    (newElement as IfThenElseBlock).falseElements =
-                      ParserService.parseScriptLineBlock(subform, lineNumber, lineBuffer);
-                    lineNumber += lineBuffer.length;
+                if (keywordInBlock === 'if-start') {
+                  nestingLevel += 1;
+                  lineBuffer.push(`if-start::${restOfLineInBlock}`);
+                } else if (keywordInBlock === 'if-else') {
+                  if (nestingLevel > 0) {
+                    nestingLevel -= 1;
+                    lineBuffer.push(`if-else::${restOfLineInBlock}`);
                   } else {
                     newElement = new IfThenElseBlock(subform, restOfLine);
-                    returnElements.push(newElement);
                     (newElement as IfThenElseBlock).trueElements =
                       ParserService.parseScriptLineBlock(subform, lineNumber, lineBuffer);
                     lineNumber += lineBuffer.length;
+                    returnElements.push(newElement);
+                    lineBuffer = [];
                   }
-                  endOfBlockMarkerFound = true;
+                } else if (keywordInBlock === 'if-end') {
+                  if (nestingLevel > 0) {
+                    nestingLevel -= 1;
+                    lineBuffer.push(`if-end::${restOfLineInBlock}`);
+                  } else {
+                    if (newElement) {
+                      (newElement as IfThenElseBlock).falseElements =
+                        ParserService.parseScriptLineBlock(subform, lineNumber, lineBuffer);
+                      lineNumber += lineBuffer.length;
+                    } else {
+                      newElement = new IfThenElseBlock(subform, restOfLine);
+                      returnElements.push(newElement);
+                      (newElement as IfThenElseBlock).trueElements =
+                        ParserService.parseScriptLineBlock(subform, lineNumber, lineBuffer);
+                      lineNumber += lineBuffer.length;
+                    }
+                    endOfBlockMarkerFound = true;
+                  }
                 } else {
                   lineBuffer.push(`${keywordInBlock}::${restOfLineInBlock}`);
                 }
