@@ -69,14 +69,14 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "verona-player-abi:build"
+            "buildTarget": "verona-player-abi:build"
           },
           "configurations": {
             "development": {
-              "browserTarget": "verona-player-abi:build:development"
+              "buildTarget": "verona-player-abi:build:development"
             },
             "production": {
-              "browserTarget": "verona-player-abi:build:production"
+              "buildTarget": "verona-player-abi:build:production"
             }
           },
           "defaultConfiguration": "development"
@@ -84,7 +84,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "verona-player-abi:build"
+            "buildTarget": "verona-player-abi:build"
           }
         },
         "test": {
