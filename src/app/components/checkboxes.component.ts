@@ -11,27 +11,35 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
   selector: 'player-checkboxes',
   template: `
     <div class="fx-row-start-start">
-      <div [style.flex] ="'0 1 50%'" *ngIf="textBefore">
-        {{textBefore}}
-      </div>
-      <div [style.flex]="'50'" class="fx-column-start-stretch" [formGroup]="localForm">
-        <div *ngFor="let element of elements">
-          <div *ngIf="element.type === fieldType.SCRIPT_ERROR">
-            {{element.text}} {{element.parameter}}
-          </div>
-          <div *ngIf="element.type === fieldType.CHECKBOX"
-               IsInViewDetection (intersecting)="comingIntoView(element.id)">
-            <mat-checkbox [formControlName]="element.id"
-                          [matTooltip]="element.helpText"
-                          (ngModelChange)="valueChanged(element.id, $event)"
-                          [matTooltipPosition]="'above'">
-              {{element.textBefore}}
-            </mat-checkbox>
-          </div>
+      @if (textBefore) {
+        <div [style.flex] ="'0 1 50%'">
+          {{textBefore}}
         </div>
+      }
+      <div [style.flex]="'50'" class="fx-column-start-stretch" [formGroup]="localForm">
+        @for (element of elements; track element) {
+          <div>
+            @if (element.type === fieldType.SCRIPT_ERROR) {
+              <div>
+                {{element.text}} {{element.parameter}}
+              </div>
+            }
+            @if (element.type === fieldType.CHECKBOX) {
+              <div
+                IsInViewDetection (intersecting)="comingIntoView(element.id)">
+                <mat-checkbox [formControlName]="element.id"
+                  [matTooltip]="element.helpText"
+                  (ngModelChange)="valueChanged(element.id, $event)"
+                  [matTooltipPosition]="'above'">
+                  {{element.textBefore}}
+                </mat-checkbox>
+              </div>
+            }
+          </div>
+        }
       </div>
     </div>
-  `
+    `
 })
 
 export class CheckboxesComponent extends ElementComponent implements OnInit, OnDestroy {

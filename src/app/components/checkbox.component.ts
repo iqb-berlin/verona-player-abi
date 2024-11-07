@@ -10,22 +10,26 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
   selector: 'player-checkbox',
   template: `
     <div class="fx-row-start-center">
-      <div [style.flex] ="'0 1 50%'" *ngIf="elementData.textBefore">
-        {{elementData.textBefore}}
-      </div>
+      @if (elementData.textBefore) {
+        <div [style.flex] ="'0 1 50%'">
+          {{elementData.textBefore}}
+        </div>
+      }
       <div [style.flex]="'50'" IsInViewDetection (intersecting)="comingIntoView()">
         <mat-checkbox [formControl]="checkboxControl"
-                      [matTooltip]="elementData.helpText"
-                      (ngModelChange)="valueChanged($event)"
-                      [matTooltipPosition]="'above'">
+          [matTooltip]="elementData.helpText"
+          (ngModelChange)="valueChanged($event)"
+          [matTooltipPosition]="'above'">
           {{elementData.textAfter}}
         </mat-checkbox>
-        <mat-error *ngIf="checkboxControl.errors && checkboxControl.touched">
-          {{checkboxControl.errors | errorTransform: true}}
-        </mat-error>
+        @if (checkboxControl.errors && checkboxControl.touched) {
+          <mat-error>
+            {{checkboxControl.errors | errorTransform: true}}
+          </mat-error>
+        }
       </div>
     </div>
-  `
+    `
 })
 export class CheckboxComponent extends ElementComponent implements OnInit, OnDestroy {
   @Input() elementData: CheckboxElement;

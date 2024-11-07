@@ -17,47 +17,81 @@ import { FieldType } from '../classes/interfaces';
 @Component({
   selector: 'player-sub-form',
   template: `
-    <ng-container [ngSwitch]="elementData.type">
-      <player-text *ngSwitchCase="fieldType.TEXT" [elementData]="elementDataAsTextElement"></player-text>
-      <player-text *ngSwitchCase="fieldType.HEADER" [elementData]="elementDataAsTextElement"></player-text>
-      <player-text *ngSwitchCase="fieldType.HTML" [elementData]="elementDataAsTextElement"></player-text>
-      <hr *ngSwitchCase="fieldType.HR"/>
-      <player-text *ngSwitchCase="fieldType.TITLE" [elementData]="elementDataAsTextElement"></player-text>
-      <p *ngSwitchCase="fieldType.SCRIPT_ERROR" class="script-error">
-        {{elementDataAsErrorElement.text}} {{elementDataAsErrorElement.parameter}}</p>
-      <player-input *ngSwitchCase="fieldType.INPUT_TEXT" [elementData]="elementDataAsNumberOrTextInputElement"
-                    (valueChange)="valueChange.emit()" [parentForm]="parentForm"></player-input>
-      <player-input *ngSwitchCase="fieldType.INPUT_NUMBER" [elementData]="elementDataAsNumberOrTextInputElement"
-                    (valueChange)="valueChange.emit()" [parentForm]="parentForm"></player-input>
-      <player-checkbox *ngSwitchCase="fieldType.CHECKBOX" [elementData]="elementDataAsCheckboxElement"
-                       (valueChange)="valueChange.emit()" [parentForm]="parentForm">
-      </player-checkbox>
-      <player-checkboxes *ngSwitchCase="fieldType.CHECKBOX_BLOCK" [elementData]="elementDataAsCheckboxBlock"
-                       (valueChange)="valueChange.emit()" [parentForm]="parentForm">
-      </player-checkboxes>
-      <player-select *ngSwitchCase="fieldType.MULTIPLE_CHOICE" [elementData]="elementDataAsSelectionElement"
-                     (valueChange)="valueChange.emit()" [parentForm]="parentForm">
-      </player-select>
-      <player-select *ngSwitchCase="fieldType.DROP_DOWN" [elementData]="elementDataAsSelectionElement"
-                     (valueChange)="valueChange.emit()" [parentForm]="parentForm">
-      </player-select>
-      <player-nav-button-group *ngSwitchCase="fieldType.NAV_BUTTON_GROUP"
-                               [elementData]="elementDataAsNavButtonGroupElement"
-                               (valueChange)="valueChange.emit()"
-                               (navigationRequested)="navigationRequested.emit($event)">
-      </player-nav-button-group>
-      <player-likert *ngSwitchCase="fieldType.LIKERT_BLOCK" [elementData]="elementDataAsLikertBlock"
-                     (valueChange)="valueChange.emit()" [parentForm]="parentForm"></player-likert>
-      <player-repeat *ngSwitchCase="fieldType.REPEAT_BLOCK" [elementData]="elementDataAsRepeatBlock"
-                     (valueChange)="valueChange.emit()" [parentForm]="parentForm"></player-repeat>
-      <div *ngSwitchCase="fieldType.IFTHENELSE_BLOCK">
-        <div *ngFor="let e of elementDataAsSimpleBlock.elements">
+@switch (elementData.type) {
+  @case (fieldType.TEXT) {
+    <player-text [elementData]="elementDataAsTextElement"></player-text>
+  }
+  @case (fieldType.HEADER) {
+    <player-text [elementData]="elementDataAsTextElement"></player-text>
+  }
+  @case (fieldType.HTML) {
+    <player-text [elementData]="elementDataAsTextElement"></player-text>
+  }
+  @case (fieldType.HR) {
+    <hr/>
+  }
+  @case (fieldType.TITLE) {
+    <player-text [elementData]="elementDataAsTextElement"></player-text>
+  }
+  @case (fieldType.SCRIPT_ERROR) {
+    <p class="script-error">
+    {{elementDataAsErrorElement.text}} {{elementDataAsErrorElement.parameter}}</p>
+  }
+  @case (fieldType.INPUT_TEXT) {
+    <player-input [elementData]="elementDataAsNumberOrTextInputElement"
+    (valueChange)="valueChange.emit()" [parentForm]="parentForm"></player-input>
+  }
+  @case (fieldType.INPUT_NUMBER) {
+    <player-input [elementData]="elementDataAsNumberOrTextInputElement"
+    (valueChange)="valueChange.emit()" [parentForm]="parentForm"></player-input>
+  }
+  @case (fieldType.CHECKBOX) {
+    <player-checkbox [elementData]="elementDataAsCheckboxElement"
+      (valueChange)="valueChange.emit()" [parentForm]="parentForm">
+    </player-checkbox>
+  }
+  @case (fieldType.CHECKBOX_BLOCK) {
+    <player-checkboxes [elementData]="elementDataAsCheckboxBlock"
+      (valueChange)="valueChange.emit()" [parentForm]="parentForm">
+    </player-checkboxes>
+  }
+  @case (fieldType.MULTIPLE_CHOICE) {
+    <player-select [elementData]="elementDataAsSelectionElement"
+      (valueChange)="valueChange.emit()" [parentForm]="parentForm">
+    </player-select>
+  }
+  @case (fieldType.DROP_DOWN) {
+    <player-select [elementData]="elementDataAsSelectionElement"
+      (valueChange)="valueChange.emit()" [parentForm]="parentForm">
+    </player-select>
+  }
+  @case (fieldType.NAV_BUTTON_GROUP) {
+    <player-nav-button-group
+      [elementData]="elementDataAsNavButtonGroupElement"
+      (valueChange)="valueChange.emit()"
+      (navigationRequested)="navigationRequested.emit($event)">
+    </player-nav-button-group>
+  }
+  @case (fieldType.LIKERT_BLOCK) {
+    <player-likert [elementData]="elementDataAsLikertBlock"
+    (valueChange)="valueChange.emit()" [parentForm]="parentForm"></player-likert>
+  }
+  @case (fieldType.REPEAT_BLOCK) {
+    <player-repeat [elementData]="elementDataAsRepeatBlock"
+    (valueChange)="valueChange.emit()" [parentForm]="parentForm"></player-repeat>
+  }
+  @case (fieldType.IFTHENELSE_BLOCK) {
+    <div>
+      @for (e of elementDataAsSimpleBlock.elements; track e) {
+        <div>
           <player-sub-form [elementData]="e" [parentForm]="parentForm"
-                           (valueChange)="valueChange.emit()"></player-sub-form>
+          (valueChange)="valueChange.emit()"></player-sub-form>
         </div>
-      </div>
-    </ng-container>
-  `,
+      }
+    </div>
+  }
+}
+`,
   styles: ['.script-error {color: orange; background-color: navy; padding: 4px 12px}']
 })
 export class SubFormComponent extends ElementComponent {

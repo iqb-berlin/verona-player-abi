@@ -14,16 +14,20 @@ import { SimpleBlock } from './classes';
 @Component({
   selector: 'app-root',
   template: `
-    <player-toolbar *ngIf="isStandalone" [parentForm]="form"></player-toolbar>
+    @if (isStandalone) {
+      <player-toolbar [parentForm]="form"></player-toolbar>
+    }
     <form #playerContent [formGroup]="form">
-      <div *ngFor="let element of rootBlock.elements" [style.margin]="'0px 30px'">
-        <player-sub-form [elementData]="element" [parentForm]="form"
-                         (valueChange)="valueChangesHappening.next($event)"
-                         (navigationRequested)="navigationRequested($event);">
-        </player-sub-form>
-      </div>
+      @for (element of rootBlock.elements; track element) {
+        <div [style.margin]="'0px 30px'">
+          <player-sub-form [elementData]="element" [parentForm]="form"
+            (valueChange)="valueChangesHappening.next($event)"
+            (navigationRequested)="navigationRequested($event);">
+          </player-sub-form>
+        </div>
+      }
     </form>
-  `,
+    `,
   encapsulation: ViewEncapsulation.None
 })
 

@@ -10,34 +10,45 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
   selector: 'player-input',
   template: `
     <div class="fx-row-start-center" IsInViewDetection (intersecting)="comingIntoView()">
-      <div [style.flex] ="'0 1 50%'" *ngIf="elementData.textBefore">
-        {{elementData.textBefore}}
-      </div>
-      <mat-form-field *ngIf="elementAsTextInput.maxLines > 1"
-                      [style.flex] ="elementData.textAfter ? '30' : '50'" appearance="fill">
-        <textarea matInput cdkTextareaAutosize="true" cdkAutosizeMinRows="2"
-                  [cdkAutosizeMaxRows]="elementAsTextInput.maxLines ? elementAsTextInput.maxLines + 1 : 2"
-                  [formControl]="inputControl"
-                  autocomplete="off"
-                  (ngModelChange)="valueChanged($event)"
-                  [matTooltip]="elementData.helpText"
-                  matTooltipPosition="above"></textarea>
-        <mat-error *ngIf="inputControl.errors">
-          {{inputControl.errors | errorTransform}}
-        </mat-error>
-      </mat-form-field>
-      <mat-form-field appearance="fill"
-          *ngIf="elementAsTextInput.maxLines <= 1 || elementAsNumberInput.maxValue || elementAsNumberInput.minValue"
+      @if (elementData.textBefore) {
+        <div [style.flex] ="'0 1 50%'">
+          {{elementData.textBefore}}
+        </div>
+      }
+      @if (elementAsTextInput.maxLines > 1) {
+        <mat-form-field
+          [style.flex] ="elementData.textAfter ? '30' : '50'" appearance="fill">
+          <textarea matInput cdkTextareaAutosize="true" cdkAutosizeMinRows="2"
+            [cdkAutosizeMaxRows]="elementAsTextInput.maxLines ? elementAsTextInput.maxLines + 1 : 2"
+            [formControl]="inputControl"
+            autocomplete="off"
+            (ngModelChange)="valueChanged($event)"
+            [matTooltip]="elementData.helpText"
+          matTooltipPosition="above"></textarea>
+          @if (inputControl.errors) {
+            <mat-error>
+              {{inputControl.errors | errorTransform}}
+            </mat-error>
+          }
+        </mat-form-field>
+      }
+      @if (elementAsTextInput.maxLines <= 1 || elementAsNumberInput.maxValue || elementAsNumberInput.minValue) {
+        <mat-form-field appearance="fill"
           [style.flex]="'0 1 25%'">
-        <input matInput [formControl]="inputControl" autocomplete="off" (ngModelChange)="valueChanged($event)"
-               [matTooltip]="elementData.helpText" matTooltipPosition="above"/>
-        <mat-error *ngIf="inputControl.errors">
-          {{inputControl.errors | errorTransform}}
-        </mat-error>
-      </mat-form-field>
-      <div [style.margin-left]="'10px'" *ngIf="elementData.textAfter">{{elementData.textAfter}}</div>
-    </div>
-  `
+          <input matInput [formControl]="inputControl" autocomplete="off" (ngModelChange)="valueChanged($event)"
+            [matTooltip]="elementData.helpText" matTooltipPosition="above"/>
+            @if (inputControl.errors) {
+              <mat-error>
+                {{inputControl.errors | errorTransform}}
+              </mat-error>
+            }
+          </mat-form-field>
+        }
+        @if (elementData.textAfter) {
+          <div [style.margin-left]="'10px'">{{elementData.textAfter}}</div>
+        }
+      </div>
+    `
 })
 
 export class InputComponent extends ElementComponent implements OnInit, OnDestroy {

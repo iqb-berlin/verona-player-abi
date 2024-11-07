@@ -10,15 +10,17 @@ import { UnitNavigationTarget } from '../verona/verona.interfaces';
   selector: 'player-nav-button-group',
   template: `
     <div class="fx-row-center-center">
-      <div *ngFor="let option of elementData.options">
-        <button mat-raised-button [matTooltip]="iconMap[option].tooltip"
-                [disabled]="iconMap[option].disabled"
-                (click)="click(option)">
-          <mat-icon>{{iconMap[option].iconName}}</mat-icon>
-        </button>
-      </div>
+      @for (option of elementData.options; track option) {
+        <div>
+          <button mat-raised-button [matTooltip]="iconMap[option].tooltip"
+            [disabled]="iconMap[option].disabled"
+            (click)="click(option)">
+            <mat-icon>{{iconMap[option].iconName}}</mat-icon>
+          </button>
+        </div>
+      }
     </div>
-  `,
+    `,
   styles: [
     `button {
       margin: 20px 5px

@@ -7,17 +7,25 @@ import { TextElement } from '../classes';
 @Component({
   selector: 'player-text',
   template: `
-    <ng-container [ngSwitch]="element.type">
-      <p *ngSwitchCase="fieldType.TEXT" [matTooltip]="element.helpText" [matTooltipPosition]="'above'">
-        {{content}}&nbsp;</p>
-      <h1 *ngSwitchCase="fieldType.TITLE" [matTooltip]="element.helpText" [matTooltipPosition]="'above'">
-        {{content}}&nbsp;</h1>
-      <h2 *ngSwitchCase="fieldType.HEADER" [matTooltip]="element.helpText" [matTooltipPosition]="'above'">
-        {{content}}&nbsp;</h2>
-      <div *ngSwitchCase="fieldType.HTML" [innerHTML]="content"
-           [matTooltip]="element.helpText" [matTooltipPosition]="'above'"></div>
-    </ng-container>
-  `
+@switch (element.type) {
+  @case (fieldType.TEXT) {
+    <p [matTooltip]="element.helpText" [matTooltipPosition]="'above'">
+    {{content}}&nbsp;</p>
+  }
+  @case (fieldType.TITLE) {
+    <h1 [matTooltip]="element.helpText" [matTooltipPosition]="'above'">
+    {{content}}&nbsp;</h1>
+  }
+  @case (fieldType.HEADER) {
+    <h2 [matTooltip]="element.helpText" [matTooltipPosition]="'above'">
+    {{content}}&nbsp;</h2>
+  }
+  @case (fieldType.HTML) {
+    <div [innerHTML]="content"
+    [matTooltip]="element.helpText" [matTooltipPosition]="'above'"></div>
+  }
+}
+`
 })
 export class TextComponent extends ElementComponent {
   content: string | SafeHtml;

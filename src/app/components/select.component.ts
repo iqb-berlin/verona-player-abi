@@ -10,39 +10,55 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
   selector: 'player-select',
   template: `
     <div [class]="elementData.type === fieldType.MULTIPLE_CHOICE ? 'fx-row-start-start' : 'fx-row-start-center'"
-         IsInViewDetection (intersecting)="comingIntoView()">
-      <div [style.flex] ="'0 1 50%'" *ngIf="elementData.textBefore">
-        {{elementData.textBefore}}
-      </div>
-      <mat-radio-group *ngIf="elementData.type === fieldType.MULTIPLE_CHOICE"
-                       [style.flex]="'50'" class="fx-column-start-stretch" [formControl]="selectInputControl"
-                       (ngModelChange)="valueChanged($event)"
-                       [matTooltip]="elementData.helpText" [matTooltipPosition]="'above'">
-        <mat-radio-button *ngFor="let option of elementData.options; let i = index"
-                          [value]="(i + 1).toString()">
-          {{option}}
-        </mat-radio-button>
-        <mat-error *ngIf="selectInputControl.touched && selectInputControl.errors">
-          {{selectInputControl.errors | errorTransform}}
-        </mat-error>
-      </mat-radio-group>
-
-      <mat-form-field [style.flex]="'50'"
-        appearance="fill" *ngIf="elementData.type === fieldType.DROP_DOWN">
-        <mat-select [formControl]="selectInputControl" placeholder="Bitte wählen"
-                    (ngModelChange)="valueChanged($event)"
-                    [matTooltip]="elementData.helpText" [matTooltipPosition]="'above'">
-          <mat-option *ngIf="!elementData.required" [value]=""></mat-option>
-          <mat-option *ngFor="let option of elementData.options; let i = index" [value]="(i + 1).toString()">
-            {{option}}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="selectInputControl.errors">
-          {{selectInputControl.errors | errorTransform}}
-        </mat-error>
-      </mat-form-field>
+      IsInViewDetection (intersecting)="comingIntoView()">
+      @if (elementData.textBefore) {
+        <div [style.flex] ="'0 1 50%'">
+          {{elementData.textBefore}}
+        </div>
+      }
+      @if (elementData.type === fieldType.MULTIPLE_CHOICE) {
+        <mat-radio-group
+          [style.flex]="'50'" class="fx-column-start-stretch" [formControl]="selectInputControl"
+          (ngModelChange)="valueChanged($event)"
+          [matTooltip]="elementData.helpText" [matTooltipPosition]="'above'">
+          @for (option of elementData.options; track option; let i = $index) {
+            <mat-radio-button
+              [value]="(i + 1).toString()">
+              {{option}}
+            </mat-radio-button>
+          }
+          @if (selectInputControl.touched && selectInputControl.errors) {
+            <mat-error>
+              {{selectInputControl.errors | errorTransform}}
+            </mat-error>
+          }
+        </mat-radio-group>
+      }
+    
+      @if (elementData.type === fieldType.DROP_DOWN) {
+        <mat-form-field [style.flex]="'50'"
+          appearance="fill">
+          <mat-select [formControl]="selectInputControl" placeholder="Bitte wählen"
+            (ngModelChange)="valueChanged($event)"
+            [matTooltip]="elementData.helpText" [matTooltipPosition]="'above'">
+            @if (!elementData.required) {
+              <mat-option [value]=""></mat-option>
+            }
+            @for (option of elementData.options; track option; let i = $index) {
+              <mat-option [value]="(i + 1).toString()">
+                {{option}}
+              </mat-option>
+            }
+          </mat-select>
+          @if (selectInputControl.errors) {
+            <mat-error>
+              {{selectInputControl.errors | errorTransform}}
+            </mat-error>
+          }
+        </mat-form-field>
+      }
     </div>
-  `
+    `
 })
 export class SelectComponent extends ElementComponent implements OnInit, OnDestroy {
   @Input() elementData: SelectionElement;

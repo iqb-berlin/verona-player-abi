@@ -14,27 +14,37 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
       <div class="fx-row-space-between-center likert-header">
         <div [style.flex]="'40'">&nbsp;</div>
         <div [style.flex]="'60'" class="fx-row-space-around-center">
-          <div *ngFor="let header of headerList" class="fx-row-center-center">{{header}}</div>
+          @for (header of headerList; track header) {
+            <div class="fx-row-center-center">{{header}}</div>
+          }
         </div>
       </div>
       <mat-card-content class="fx-column-start-stretch" [formGroup]="localForm">
-        <div *ngFor="let element of elements" class="likert-row">
-          <div *ngIf="element.type === fieldType.SCRIPT_ERROR">
-            {{element.text}} {{element.parameter}}
+        @for (element of elements; track element) {
+          <div class="likert-row">
+            @if (element.type === fieldType.SCRIPT_ERROR) {
+              <div>
+                {{element.text}} {{element.parameter}}
+              </div>
+            }
+            @if (element.type === fieldType.LIKERT_ELEMENT) {
+              <div
+                class="fx-row-space-around-center" IsInViewDetection (intersecting)="comingIntoView(element.id)">
+                <div [style.flex]="'40'" [matTooltip]="element.helpText">{{element.textBefore}}</div>
+                <mat-radio-group [formControlName]="element.id" [style.flex]="'60'"
+                  class="fx-row-space-around-center" (ngModelChange)="valueChanged(element.id, $event)">
+                  @for (header of headerList; track header; let i = $index) {
+                    <mat-radio-button [value]="(i + 1).toString()">
+                    </mat-radio-button>
+                  }
+                </mat-radio-group>
+              </div>
+            }
           </div>
-          <div *ngIf="element.type === fieldType.LIKERT_ELEMENT"
-               class="fx-row-space-around-center" IsInViewDetection (intersecting)="comingIntoView(element.id)">
-            <div [style.flex]="'40'" [matTooltip]="element.helpText">{{element.textBefore}}</div>
-            <mat-radio-group [formControlName]="element.id" [style.flex]="'60'"
-                             class="fx-row-space-around-center" (ngModelChange)="valueChanged(element.id, $event)">
-              <mat-radio-button *ngFor="let header of headerList; let i = index" [value]="(i + 1).toString()">
-              </mat-radio-button>
-            </mat-radio-group>
-          </div>
-        </div>
+        }
       </mat-card-content>
     </mat-card>
-  `,
+    `,
   styles: [
     '.likert-header {min-height: 40px}',
     '.likert-row:nth-child(even) {background-color: #F5F5F5;}',
