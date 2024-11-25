@@ -49,7 +49,7 @@ export class CheckboxComponent extends ElementComponent implements OnInit, OnDes
   }
 
   valueChanged($event: MatCheckboxChange) {
-    this.elementData().value = $event ? 'true' : 'false';
+    this.elementData().value = $event.checked ? 'true' : 'false';
     this.elementData().status = VeronaResponseStatus.VALUE_CHANGED;
     this.valueChange.emit();
   }

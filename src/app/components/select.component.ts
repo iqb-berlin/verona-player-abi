@@ -4,6 +4,8 @@ import { FormControl, Validators } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { SelectionElement } from '../classes';
 import { VeronaResponseStatus } from '../verona/verona.interfaces';
+import {MatSelectChange} from "@angular/material/select";
+import {MatRadioChange} from "@angular/material/radio";
 
 @Component({
   selector: 'player-select',
@@ -19,7 +21,7 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
       @if (elementData().type === fieldType.MULTIPLE_CHOICE) {
         <mat-radio-group
           [style.flex]="'50'" class="fx-column-start-stretch" [formControl]="selectInputControl"
-          (ngModelChange)="valueChanged($event)"
+          (change)="valueChanged($event)"
           [matTooltip]="elementData().helpText" [matTooltipPosition]="'above'">
           @for (option of elementData().options; track option; let i = $index) {
             <mat-radio-button
@@ -39,7 +41,7 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
         <mat-form-field [style.flex]="'50'"
           appearance="fill">
           <mat-select [formControl]="selectInputControl" placeholder="Bitte wählen"
-            (ngModelChange)="valueChanged($event)"
+            (selectionChange)="valueChanged($event)"
             [matTooltip]="elementData().helpText" [matTooltipPosition]="'above'">
             @if (!elementData().required) {
               <mat-option [value]=""></mat-option>
@@ -74,8 +76,8 @@ export class SelectComponent extends ElementComponent implements OnInit, OnDestr
     this.parentForm().removeControl(this.elementData().id);
   }
 
-  valueChanged($event: string) {
-    this.elementData().value = $event;
+  valueChanged($event: any) {
+    this.elementData().value = $event.value;
     this.elementData().status = VeronaResponseStatus.VALUE_CHANGED;
     this.valueChange.emit();
   }

@@ -72,7 +72,7 @@ export class CheckboxesComponent extends ElementComponent implements OnInit, OnD
   valueChanged(id: string, $event: MatCheckboxChange) {
     const myElement = this.elements.find(e => (e as InputElement).id === id);
     if (myElement) {
-      (myElement as InputElement).value = $event ? 'true' : 'false';
+      (myElement as InputElement).value = $event.checked ? 'true' : 'false';
       (myElement as InputElement).status = VeronaResponseStatus.VALUE_CHANGED;
       this.valueChange.emit();
     }

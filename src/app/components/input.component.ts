@@ -22,7 +22,7 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
             [cdkAutosizeMaxRows]="elementAsTextInput.maxLines ? elementAsTextInput.maxLines + 1 : 2"
             [formControl]="inputControl"
             autocomplete="off"
-            (ngModelChange)="valueChanged($event)"
+            (change)="valueChanged($event)"
             [matTooltip]="elementData().helpText"
           matTooltipPosition="above"></textarea>
           @if (inputControl.errors) {
@@ -35,7 +35,7 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
       @if (elementAsTextInput.maxLines <= 1 || elementAsNumberInput.maxValue || elementAsNumberInput.minValue) {
         <mat-form-field appearance="fill"
           [style.flex]="'0 1 25%'">
-          <input matInput [formControl]="inputControl" autocomplete="off" (ngModelChange)="valueChanged($event)"
+          <input matInput [formControl]="inputControl" autocomplete="off" (change)="valueChanged($event)"
             [matTooltip]="elementData().helpText" matTooltipPosition="above"/>
             @if (inputControl.errors) {
               <mat-error>
@@ -82,8 +82,8 @@ export class InputComponent extends ElementComponent implements OnInit, OnDestro
     this.parentForm().removeControl(this.elementData().id);
   }
 
-  valueChanged($event: string) {
-    this.elementData().value = $event;
+  valueChanged($event: Event) {
+    this.elementData().value = ($event.target as HTMLInputElement).value;
     this.elementData().status = VeronaResponseStatus.VALUE_CHANGED;
     this.valueChange.emit();
   }
