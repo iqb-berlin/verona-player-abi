@@ -1,5 +1,5 @@
 import {
-  Component, EventEmitter, OnInit, Output, input } from '@angular/core';
+  Component, OnInit, input, output } from '@angular/core';
 import { ElementComponent } from './element.component';
 import { NavButtonGroupElement } from '../classes';
 import { VeronaService } from '../verona/verona.service';
@@ -34,7 +34,7 @@ import { UnitNavigationTarget } from '../verona/verona.interfaces';
 })
 export class NavButtonsComponent extends ElementComponent implements OnInit {
   elementData = input<NavButtonGroupElement>();
-  @Output() navigationRequested = new EventEmitter<string>();
+  navigationRequested = output<string>();
 
   iconMap = {
     previous: {

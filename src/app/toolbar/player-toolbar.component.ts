@@ -1,5 +1,5 @@
 import {
-  Component, EventEmitter, Output, input } from '@angular/core';
+  Component, input, output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { lastValueFrom, map } from 'rxjs';
@@ -75,7 +75,7 @@ nav-button-group::previous##next##first##last##end`;
 })
 export class PlayerToolbarComponent {
   parentForm = input<FormGroup>();
-  @Output() toggleDrawerClick = new EventEmitter();
+  toggleDrawerClick = output();
   private lastScript = '';
 
   constructor(

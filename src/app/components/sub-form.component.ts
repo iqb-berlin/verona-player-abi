@@ -1,5 +1,5 @@
 import {
-  Component, EventEmitter, Output, input } from '@angular/core';
+  Component, input, output } from '@angular/core';
 import { ElementComponent } from './element.component';
 import {
   CheckboxBlock,
@@ -96,7 +96,7 @@ import { FieldType } from '../classes/interfaces';
 })
 export class SubFormComponent extends ElementComponent {
   elementData = input<UIElement>();
-  @Output() navigationRequested = new EventEmitter<string>();
+  navigationRequested = output<string>();
   get elementDataAsTextElement(): TextElement {
     return this.elementData() as TextElement;
   }

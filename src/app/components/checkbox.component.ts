@@ -4,6 +4,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { CheckboxElement } from '../classes';
 import { VeronaResponseStatus } from '../verona/verona.interfaces';
+import {MatCheckboxChange} from "@angular/material/checkbox";
 
 @Component({
   selector: 'player-checkbox',
@@ -18,7 +19,7 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
       <div [style.flex]="'50'" IsInViewDetection (intersecting)="comingIntoView()">
         <mat-checkbox [formControl]="checkboxControl"
           [matTooltip]="elementData().helpText"
-          (ngModelChange)="valueChanged($event)"
+          (change)="valueChanged($event)"
           [matTooltipPosition]="'above'">
           {{elementData().textAfter}}
         </mat-checkbox>
@@ -47,7 +48,7 @@ export class CheckboxComponent extends ElementComponent implements OnInit, OnDes
     this.parentForm().removeControl(this.elementData().id);
   }
 
-  valueChanged($event: boolean) {
+  valueChanged($event: MatCheckboxChange) {
     this.elementData().value = $event ? 'true' : 'false';
     this.elementData().status = VeronaResponseStatus.VALUE_CHANGED;
     this.valueChange.emit();

@@ -130,6 +130,7 @@ export class VeronaService {
   sendNewUnitState(dataChunks: ChunkData[], responseProgress: ProgressValue, presentationProgress: ProgressValue) {
     if (window === window.parent) {
       VeronaService.sendConsoleMessage_Info('vopStateChangedNotification sent');
+      console.log(dataChunks);
     } else {
       const stateData: LocalUnitState = {};
       if (responseProgress) stateData.responseProgress = responseProgress;
