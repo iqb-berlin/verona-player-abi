@@ -25,7 +25,7 @@ import { FieldType } from '../classes/interfaces';
     <player-text [elementData]="elementDataAsTextElement"></player-text>
   }
   @case (fieldType.HTML) {
-    <player-text [elementData]="elementDataAsTextElement"></player-text>
+    <player-html [elementData]="elementDataAsTextElement"></player-html>
   }
   @case (fieldType.HR) {
     <hr/>

@@ -25,7 +25,8 @@ import {
   TextComponent,
   NavButtonsComponent,
   CheckboxesComponent,
-  LikertComponent
+  LikertComponent,
+  HtmlComponent
 } from './components';
 import { AppComponent } from './app.component';
 import { InputErrorPipe } from './components/input-error.pipe';
@@ -48,7 +49,8 @@ import { InputScriptDialog } from './toolbar/input-script-dialog.component';
     CheckboxesComponent,
     PlayerToolbarComponent,
     IsInViewDirective,
-    InputScriptDialog
+    InputScriptDialog,
+    HtmlComponent
   ],
   imports: [
     BrowserModule,
