@@ -22,6 +22,6 @@ import { TextElement } from '../classes';
   `
 })
 
-export class TextComponent extends ElementComponent implements OnInit {
+export class TextComponent extends ElementComponent {
   elementData = input<TextElement>();
 }

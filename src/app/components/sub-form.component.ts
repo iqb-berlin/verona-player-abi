@@ -16,7 +16,7 @@ import { FieldType } from '../classes/interfaces';
 @Component({
   selector: 'player-sub-form',
 
-      template: `
+  template: `
 @switch (elementData().type) {
   @case (fieldType.TEXT) {
     <player-text [elementData]="elementDataAsTextElement"></player-text>
@@ -94,9 +94,11 @@ import { FieldType } from '../classes/interfaces';
 `,
   styles: ['.script-error {color: orange; background-color: navy; padding: 4px 12px}']
 })
+
 export class SubFormComponent extends ElementComponent {
   elementData = input<UIElement>();
   navigationRequested = output<string>();
+
   get elementDataAsTextElement(): TextElement {
     return this.elementData() as TextElement;
   }
