@@ -1,4 +1,4 @@
-import { Component, Input, input } from '@angular/core';
+import {Component, input, OnInit} from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ElementComponent } from './element.component';
 import { FieldType } from '../classes/interfaces';
@@ -27,17 +27,17 @@ import { TextElement } from '../classes';
 }
 `
 })
-export class TextComponent extends ElementComponent {
+export class TextComponent extends ElementComponent implements OnInit {
   content: string | SafeHtml;
+  elementData = input<TextElement>();
   element: TextElement;
 
-  @Input()
-  set elementData(value: TextElement) {
-    this.element = value;
-    if (value.type === FieldType.HTML) {
-      this.content = this.sanitizer.bypassSecurityTrustHtml(value.text);
+  ngOnInit(): void {
+    this.element = this.elementData();
+    if (this.elementData().type === FieldType.HTML) {
+      this.content = this.sanitizer.bypassSecurityTrustHtml(this.elementData().text);
     } else {
-      this.content = value.text;
+      this.content = this.elementData().text;
     }
   }
 

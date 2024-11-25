@@ -57,13 +57,13 @@ export class LikertComponent extends ElementComponent implements OnInit, OnDestr
   localForm = new FormGroup({});
   localFormId = Math.floor(Math.random() * 20000000 + 10000000).toString();
   headerList: string[];
+  elementData = input<LikertBlock>();
   elements: (LikertElement | ErrorElement)[];
 
-  @Input()
-  set elementData(value: LikertBlock) {
+  ngOnInit() {
     this.elements = [];
-    this.headerList = value.headerList;
-    value.elements.forEach(likertElement => {
+    this.headerList = this.elementData().headerList;
+    this.elementData().elements.forEach(likertElement => {
       if (likertElement instanceof LikertElement) {
         const formControl = new FormControl();
         formControl.setValue(likertElement.value, { emitEvent: false });
@@ -73,12 +73,7 @@ export class LikertComponent extends ElementComponent implements OnInit, OnDestr
         this.elements.push(likertElement);
       }
     });
-  }
-
-  ngOnInit() {
-    setTimeout(() => {
-      this.parentForm().addControl(this.localFormId, this.localForm);
-    });
+    this.parentForm().addControl(this.localFormId, this.localForm);
   }
 
   ngOnDestroy(): void {

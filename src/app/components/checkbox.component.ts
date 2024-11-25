@@ -4,7 +4,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { CheckboxElement } from '../classes';
 import { VeronaResponseStatus } from '../verona/verona.interfaces';
-import {MatCheckboxChange} from "@angular/material/checkbox";
+import { MatCheckboxChange } from "@angular/material/checkbox";
 
 @Component({
   selector: 'player-checkbox',
