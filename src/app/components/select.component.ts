@@ -1,6 +1,5 @@
 import {
-  Component, Input, OnDestroy, OnInit
-} from '@angular/core';
+  Component, OnDestroy, OnInit, input } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { SelectionElement } from '../classes';
@@ -8,20 +7,21 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
 
 @Component({
   selector: 'player-select',
-  template: `
-    <div [class]="elementData.type === fieldType.MULTIPLE_CHOICE ? 'fx-row-start-start' : 'fx-row-start-center'"
+
+      template: `
+    <div [class]="elementData().type === fieldType.MULTIPLE_CHOICE ? 'fx-row-start-start' : 'fx-row-start-center'"
       IsInViewDetection (intersecting)="comingIntoView()">
-      @if (elementData.textBefore) {
+      @if (elementData().textBefore) {
         <div [style.flex] ="'0 1 50%'">
-          {{elementData.textBefore}}
+          {{elementData().textBefore}}
         </div>
       }
-      @if (elementData.type === fieldType.MULTIPLE_CHOICE) {
+      @if (elementData().type === fieldType.MULTIPLE_CHOICE) {
         <mat-radio-group
           [style.flex]="'50'" class="fx-column-start-stretch" [formControl]="selectInputControl"
           (ngModelChange)="valueChanged($event)"
-          [matTooltip]="elementData.helpText" [matTooltipPosition]="'above'">
-          @for (option of elementData.options; track option; let i = $index) {
+          [matTooltip]="elementData().helpText" [matTooltipPosition]="'above'">
+          @for (option of elementData().options; track option; let i = $index) {
             <mat-radio-button
               [value]="(i + 1).toString()">
               {{option}}
@@ -34,17 +34,17 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
           }
         </mat-radio-group>
       }
-    
-      @if (elementData.type === fieldType.DROP_DOWN) {
+
+      @if (elementData().type === fieldType.DROP_DOWN) {
         <mat-form-field [style.flex]="'50'"
           appearance="fill">
           <mat-select [formControl]="selectInputControl" placeholder="Bitte wählen"
             (ngModelChange)="valueChanged($event)"
-            [matTooltip]="elementData.helpText" [matTooltipPosition]="'above'">
-            @if (!elementData.required) {
+            [matTooltip]="elementData().helpText" [matTooltipPosition]="'above'">
+            @if (!elementData().required) {
               <mat-option [value]=""></mat-option>
             }
-            @for (option of elementData.options; track option; let i = $index) {
+            @for (option of elementData().options; track option; let i = $index) {
               <mat-option [value]="(i + 1).toString()">
                 {{option}}
               </mat-option>
@@ -61,28 +61,28 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
     `
 })
 export class SelectComponent extends ElementComponent implements OnInit, OnDestroy {
-  @Input() elementData: SelectionElement;
+  elementData = input<SelectionElement>();
   selectInputControl = new FormControl();
 
   ngOnInit(): void {
-    if (this.elementData.required) this.selectInputControl.setValidators(Validators.required);
-    this.selectInputControl.setValue(this.elementData.value, { emitEvent: false });
-    this.parentForm.addControl(this.elementData.id, this.selectInputControl);
+    if (this.elementData().required) this.selectInputControl.setValidators(Validators.required);
+    this.selectInputControl.setValue(this.elementData().value, { emitEvent: false });
+    this.parentForm().addControl(this.elementData().id, this.selectInputControl);
   }
 
   ngOnDestroy(): void {
-    this.parentForm.removeControl(this.elementData.id);
+    this.parentForm().removeControl(this.elementData().id);
   }
 
   valueChanged($event: string) {
-    this.elementData.value = $event;
-    this.elementData.status = VeronaResponseStatus.VALUE_CHANGED;
+    this.elementData().value = $event;
+    this.elementData().status = VeronaResponseStatus.VALUE_CHANGED;
     this.valueChange.emit();
   }
 
   comingIntoView() {
-    if (this.elementData.status === VeronaResponseStatus.NOT_REACHED) {
-      this.elementData.status = VeronaResponseStatus.DISPLAYED;
+    if (this.elementData().status === VeronaResponseStatus.NOT_REACHED) {
+      this.elementData().status = VeronaResponseStatus.DISPLAYED;
       this.valueChange.emit();
     }
   }

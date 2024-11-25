@@ -1,6 +1,5 @@
 import {
-  Component, EventEmitter, Input, OnInit, Output
-} from '@angular/core';
+  Component, EventEmitter, OnInit, Output, input } from '@angular/core';
 import { ElementComponent } from './element.component';
 import { NavButtonGroupElement } from '../classes';
 import { VeronaService } from '../verona/verona.service';
@@ -8,9 +7,10 @@ import { UnitNavigationTarget } from '../verona/verona.interfaces';
 
 @Component({
   selector: 'player-nav-button-group',
-  template: `
+  
+      template: `
     <div class="fx-row-center-center">
-      @for (option of elementData.options; track option) {
+      @for (option of elementData().options; track option) {
         <div>
           <button mat-raised-button [matTooltip]="iconMap[option].tooltip"
             [disabled]="iconMap[option].disabled"
@@ -33,7 +33,7 @@ import { UnitNavigationTarget } from '../verona/verona.interfaces';
   ]
 })
 export class NavButtonsComponent extends ElementComponent implements OnInit {
-  @Input() elementData: NavButtonGroupElement;
+  elementData = input<NavButtonGroupElement>();
   @Output() navigationRequested = new EventEmitter<string>();
 
   iconMap = {

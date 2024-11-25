@@ -1,6 +1,5 @@
 import {
-  Component, EventEmitter, Input, Output
-} from '@angular/core';
+  Component, EventEmitter, Output, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { lastValueFrom, map } from 'rxjs';
@@ -75,7 +74,7 @@ nav-button-group::previous##next##first##last##end`;
   ]
 })
 export class PlayerToolbarComponent {
-  @Input() parentForm: FormGroup;
+  parentForm = input<FormGroup>();
   @Output() toggleDrawerClick = new EventEmitter();
   private lastScript = '';
 
@@ -117,6 +116,6 @@ export class PlayerToolbarComponent {
   }
 
   check() {
-    VeronaService.sendConsoleMessage_Info(this.parentForm.valid ? 'Form is valid' : 'Form is not valid');
+    VeronaService.sendConsoleMessage_Info(this.parentForm().valid ? 'Form is valid' : 'Form is not valid');
   }
 }

@@ -1,6 +1,5 @@
 import {
-  Component, Input, OnDestroy, OnInit, ViewEncapsulation
-} from '@angular/core';
+  Component, Input, OnDestroy, OnInit, ViewEncapsulation, input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { ErrorElement, LikertBlock, LikertElement } from '../classes';
@@ -78,12 +77,12 @@ export class LikertComponent extends ElementComponent implements OnInit, OnDestr
 
   ngOnInit() {
     setTimeout(() => {
-      this.parentForm.addControl(this.localFormId, this.localForm);
+      this.parentForm().addControl(this.localFormId, this.localForm);
     });
   }
 
   ngOnDestroy(): void {
-    this.parentForm.removeControl(this.localFormId);
+    this.parentForm().removeControl(this.localFormId);
   }
 
   valueChanged(id: string, $event: string) {

@@ -1,6 +1,5 @@
 import {
-  Component, Input, OnDestroy, OnInit
-} from '@angular/core';
+  Component, Input, OnDestroy, OnInit, input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { CheckboxBlock, CheckboxElement, ErrorElement } from '../classes';
@@ -66,12 +65,12 @@ export class CheckboxesComponent extends ElementComponent implements OnInit, OnD
 
   ngOnInit() {
     setTimeout(() => {
-      this.parentForm.addControl(this.localFormId, this.localForm);
+      this.parentForm().addControl(this.localFormId, this.localForm);
     });
   }
 
   ngOnDestroy(): void {
-    this.parentForm.removeControl(this.localFormId);
+    this.parentForm().removeControl(this.localFormId);
   }
 
   valueChanged(id: string, $event: boolean) {

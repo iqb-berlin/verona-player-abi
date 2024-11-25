@@ -1,20 +1,20 @@
 import {
-  Component, Input, OnDestroy, OnInit
-} from '@angular/core';
+  Component, OnDestroy, OnInit, input } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { RepeatBlock } from '../classes';
 
 @Component({
   selector: 'player-repeat',
-  template: `
+
+      template: `
     <div class="fx-row-space-between-center">
-      @if (elementData.numberOfSubFormsPrompt) {
-        <div [style.flex]="'50'" [matTooltip]="elementData.helpText">
-          {{elementData.numberOfSubFormsPrompt}}
+      @if (elementData().numberOfSubFormsPrompt) {
+        <div [style.flex]="'50'" [matTooltip]="elementData().helpText">
+          {{elementData().numberOfSubFormsPrompt}}
         </div>
       }
-      @if (elementData.numberOfSubFormsPrompt) {
+      @if (elementData().numberOfSubFormsPrompt) {
         <div [style.flex]="'50'"
           class="fx-row-center-center">
           <mat-form-field [style.flex]="'30'">
@@ -26,28 +26,28 @@ import { RepeatBlock } from '../classes';
             }
           </mat-form-field>
           <button type="button" mat-raised-button matTooltip="Neue Anzahl anwenden"
-            [disabled]="numberInputControl.invalid || elementData.numberOfSubForms === numberInputControl.value || !numberInputControl.value"
+            [disabled]="numberInputControl.invalid || elementData().numberOfSubForms === numberInputControl.value || !numberInputControl.value"
             (click)="applyRepeatNumber()">
             Anwenden
           </button>
         </div>
       }
     </div>
-    @if (elementData.elements.length > 0) {
+    @if (elementData().elements.length > 0) {
       <mat-accordion class="fx-column-start-stretch"
         multi="false">
-        @for (elementList of elementData.elementsAsSimpleBlocks; track elementList; let i = $index) {
+        @for (elementList of elementData().elementsAsSimpleBlocks; track elementList; let i = $index) {
           <mat-expansion-panel
-            (afterExpand)="scrollRepeatContent(elementData.id + '_title_' + i)">
+            (afterExpand)="scrollRepeatContent(elementData().id + '_title_' + i)">
             <mat-expansion-panel-header class="fx-row-space-between-center">
-              <mat-panel-title [id]="elementData.id + '_title_' + i">
-                {{ elementData.headerText }} {{i + 1}}
+              <mat-panel-title [id]="elementData().id + '_title_' + i">
+                {{ elementData().headerText }} {{i + 1}}
               </mat-panel-title>
             </mat-expansion-panel-header>
             <ng-template matExpansionPanelContent>
               @for (e of elementList.elements; track e) {
                 <div>
-                  <player-sub-form [elementData]="e" [parentForm]="parentForm"
+                  <player-sub-form [elementData]="e" [parentForm]="parentForm()"
                     (valueChange)="valueChange.emit()">
                   </player-sub-form>
                 </div>
@@ -62,24 +62,24 @@ import { RepeatBlock } from '../classes';
 })
 
 export class RepeatComponent extends ElementComponent implements OnInit, OnDestroy {
-  @Input() elementData: RepeatBlock;
+  elementData = input<RepeatBlock>();
   numberInputControl = new FormControl();
 
   ngOnInit(): void {
-    if (this.elementData instanceof RepeatBlock) {
+    if (this.elementData() instanceof RepeatBlock) {
       const myValidators = [];
       myValidators.push(Validators.min(1));
-      if (this.elementData.maxNumberOfSubForms) myValidators.push(Validators.max(this.elementData.maxNumberOfSubForms));
+      if (this.elementData().maxNumberOfSubForms) myValidators.push(Validators.max(this.elementData().maxNumberOfSubForms));
       this.numberInputControl.setValidators(myValidators);
-      if (this.elementData.numberOfSubForms) this.numberInputControl.setValue(this.elementData.numberOfSubForms);
-      this.parentForm.addControl(this.elementData.id, this.numberInputControl);
+      if (this.elementData().numberOfSubForms) this.numberInputControl.setValue(this.elementData().numberOfSubForms);
+      this.parentForm().addControl(this.elementData().id, this.numberInputControl);
     }
   }
 
   applyRepeatNumber(): void {
     const valueNumberTry = Number(this.numberInputControl.value);
     if (!Number.isNaN(valueNumberTry)) {
-      this.elementData.numberOfSubForms = valueNumberTry;
+      this.elementData().numberOfSubForms = valueNumberTry;
       this.valueChange.emit();
     }
   }
@@ -91,6 +91,6 @@ export class RepeatComponent extends ElementComponent implements OnInit, OnDestr
   }
 
   ngOnDestroy(): void {
-    this.parentForm.removeControl((this.elementData as RepeatBlock).id);
+    this.parentForm().removeControl((this.elementData() as RepeatBlock).id);
   }
 }

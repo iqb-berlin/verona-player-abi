@@ -1,6 +1,5 @@
 import {
-  Component, Input, OnDestroy, OnInit
-} from '@angular/core';
+  Component, OnDestroy, OnInit, input } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { CheckboxElement } from '../classes';
@@ -8,19 +7,20 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
 
 @Component({
   selector: 'player-checkbox',
-  template: `
+
+      template: `
     <div class="fx-row-start-center">
-      @if (elementData.textBefore) {
+      @if (elementData().textBefore) {
         <div [style.flex] ="'0 1 50%'">
-          {{elementData.textBefore}}
+          {{elementData().textBefore}}
         </div>
       }
       <div [style.flex]="'50'" IsInViewDetection (intersecting)="comingIntoView()">
         <mat-checkbox [formControl]="checkboxControl"
-          [matTooltip]="elementData.helpText"
+          [matTooltip]="elementData().helpText"
           (ngModelChange)="valueChanged($event)"
           [matTooltipPosition]="'above'">
-          {{elementData.textAfter}}
+          {{elementData().textAfter}}
         </mat-checkbox>
         @if (checkboxControl.errors && checkboxControl.touched) {
           <mat-error>
@@ -32,30 +32,30 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
     `
 })
 export class CheckboxComponent extends ElementComponent implements OnInit, OnDestroy {
-  @Input() elementData: CheckboxElement;
+  elementData = input<CheckboxElement>();
   checkboxControl = new FormControl();
 
   ngOnInit(): void {
-    if (this.elementData.required) {
+    if (this.elementData().required) {
       this.checkboxControl.setValidators(Validators.requiredTrue);
     }
-    this.parentForm.addControl(this.elementData.id, this.checkboxControl);
-    this.checkboxControl.setValue(this.elementData.value === 'true', { emitEvent: false });
+    this.parentForm().addControl(this.elementData().id, this.checkboxControl);
+    this.checkboxControl.setValue(this.elementData().value === 'true', { emitEvent: false });
   }
 
   ngOnDestroy(): void {
-    this.parentForm.removeControl(this.elementData.id);
+    this.parentForm().removeControl(this.elementData().id);
   }
 
   valueChanged($event: boolean) {
-    this.elementData.value = $event ? 'true' : 'false';
-    this.elementData.status = VeronaResponseStatus.VALUE_CHANGED;
+    this.elementData().value = $event ? 'true' : 'false';
+    this.elementData().status = VeronaResponseStatus.VALUE_CHANGED;
     this.valueChange.emit();
   }
 
   comingIntoView() {
-    if (this.elementData.status === VeronaResponseStatus.NOT_REACHED) {
-      this.elementData.status = VeronaResponseStatus.DISPLAYED;
+    if (this.elementData().status === VeronaResponseStatus.NOT_REACHED) {
+      this.elementData().status = VeronaResponseStatus.DISPLAYED;
       this.valueChange.emit();
     }
   }
