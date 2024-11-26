@@ -1,10 +1,11 @@
 import {
-  Component, Input, OnDestroy, OnInit, ViewEncapsulation, input } from '@angular/core';
+  Component, OnDestroy, OnInit, ViewEncapsulation, input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { ErrorElement, LikertBlock, LikertElement } from '../classes';
 import { InputElement } from '../classes/elements/input-element.class';
 import { VeronaResponseStatus } from '../verona/verona.interfaces';
+import { MatRadioChange } from "@angular/material/radio";
 
 @Component({
   selector: 'player-likert',
@@ -31,11 +32,12 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
                 class="fx-row-space-around-center" IsInViewDetection (intersecting)="comingIntoView(element.id)">
                 <div [style.flex]="'40'" [matTooltip]="element.helpText">{{element.textBefore}}</div>
                 <mat-radio-group [formControlName]="element.id" [style.flex]="'60'"
-                  class="fx-row-space-around-center" (ngModelChange)="valueChanged(element.id, $event)">
+                  class="fx-row-space-around-center" (change)="valueChanged(element.id, $event)">
                   @for (header of headerList; track header; let i = $index) {
                     <mat-radio-button [value]="(i + 1).toString()">
                     </mat-radio-button>
                   }
+                  <button (click)="resetControl(element.id, $event)">Reset</button>
                 </mat-radio-group>
               </div>
             }
@@ -80,10 +82,21 @@ export class LikertComponent extends ElementComponent implements OnInit, OnDestr
     this.parentForm().removeControl(this.localFormId);
   }
 
-  valueChanged(id: string, $event: string) {
+  resetControl(id: string, $event: any) {
+    const myControl = this.localForm.controls[id];
+    if (myControl) myControl.setValue(null);
+    const myElement= this.elements.find(e => (e as InputElement).id === id);
+    if (myElement) {
+      (myElement as InputElement).value = undefined;
+      (myElement as InputElement).status = VeronaResponseStatus.DISPLAYED;
+      this.valueChange.emit();
+    }
+  }
+
+  valueChanged(id: string, $event: MatRadioChange) {
     const myElement = this.elements.find(e => (e as InputElement).id === id);
     if (myElement) {
-      (myElement as InputElement).value = $event;
+      (myElement as InputElement).value = $event.value;
       (myElement as InputElement).status = VeronaResponseStatus.VALUE_CHANGED;
       this.valueChange.emit();
     }
