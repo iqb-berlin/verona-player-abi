@@ -76,7 +76,7 @@ export class SelectComponent extends ElementComponent implements OnInit, OnDestr
     this.parentForm().removeControl(this.elementData().id);
   }
 
-  valueChanged($event: any) {
+  valueChanged($event: MatSelectChange | MatRadioChange) {
     this.elementData().value = $event.value;
     this.elementData().status = VeronaResponseStatus.VALUE_CHANGED;
     this.valueChange.emit();

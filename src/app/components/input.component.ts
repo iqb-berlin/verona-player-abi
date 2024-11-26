@@ -22,7 +22,7 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
             [cdkAutosizeMaxRows]="elementAsTextInput.maxLines ? elementAsTextInput.maxLines + 1 : 2"
             [formControl]="inputControl"
             autocomplete="off"
-            (change)="valueChanged($event)"
+            (input)="valueChanged($event)"
             [matTooltip]="elementData().helpText"
           matTooltipPosition="above"></textarea>
           @if (inputControl.errors) {
@@ -35,7 +35,7 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
       @if (elementAsTextInput.maxLines <= 1 || elementAsNumberInput.maxValue || elementAsNumberInput.minValue) {
         <mat-form-field appearance="fill"
           [style.flex]="'0 1 25%'">
-          <input matInput [formControl]="inputControl" autocomplete="off" (change)="valueChanged($event)"
+          <input matInput [formControl]="inputControl" autocomplete="off" (input)="valueChanged($event)"
             [matTooltip]="elementData().helpText" matTooltipPosition="above"/>
             @if (inputControl.errors) {
               <mat-error>

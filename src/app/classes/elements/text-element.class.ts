@@ -30,6 +30,6 @@ export class TextElement extends UIElement {
   // eslint-disable-next-line class-methods-use-this
   getValues(): VeronaResponse[] { return []; }
 
-  // eslint-disable-next-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this,@typescript-eslint/no-unused-vars
   check(values: VeronaResponse[]): void { }
 }

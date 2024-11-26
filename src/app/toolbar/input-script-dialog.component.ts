@@ -26,7 +26,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
   ]
 })
 
-export class InputScriptDialog {
+export class InputScriptDialogComponent {
   scriptText = '';
   constructor(@Inject(MAT_DIALOG_DATA) public data: unknown) {
     this.scriptText = data as string;

@@ -1,5 +1,5 @@
 import {
-  Component, Input, OnDestroy, OnInit, ViewEncapsulation, input } from '@angular/core';
+  Component, OnDestroy, OnInit, ViewEncapsulation, input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { ErrorElement, LikertBlock, LikertElement } from '../classes';
