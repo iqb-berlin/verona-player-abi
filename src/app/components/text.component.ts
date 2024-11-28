@@ -4,6 +4,7 @@ import { TextElement } from '../classes';
 
 @Component({
   selector: 'player-text',
+  standalone: false,
   template: `
     @switch (elementData().type) {
       @case (fieldType.TEXT) {

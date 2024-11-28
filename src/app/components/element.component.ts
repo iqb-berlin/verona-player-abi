@@ -3,7 +3,10 @@ import {
 import { FormGroup } from '@angular/forms';
 import { FieldType } from '../classes/interfaces';
 
-@Directive()
+@Directive({
+  standalone: false
+})
+
 export abstract class ElementComponent {
   parentForm = input<FormGroup>();
   valueChange = output();

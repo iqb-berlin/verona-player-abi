@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { lastValueFrom, map } from 'rxjs';
 import { VeronaService } from '../verona/verona.service';
-import { InputScriptDialog } from './input-script-dialog.component';
+import { InputScriptDialogComponent } from './input-script-dialog.component';
 
 const testScript1 = `iqb-scripted::1.0
 title::Testscript Title??Hilfetext1
@@ -52,6 +52,7 @@ nav-button-group::previous##next##first##last##end`;
 
 @Component({
   selector: 'player-toolbar',
+  standalone: false,
   template: `
     <button mat-fab [matMenuTriggerFor]="menu" matTooltip="Load/Save..." matTooltipPosition="above">
       <mat-icon>menu</mat-icon>
@@ -84,7 +85,7 @@ export class PlayerToolbarComponent {
   ) { }
 
   scriptDialogBox() {
-    const dialogRef = this.inputScriptDialog.open(InputScriptDialog, {
+    const dialogRef = this.inputScriptDialog.open(InputScriptDialogComponent, {
       width: '600px',
       height: '700px',
       data: this.lastScript || testScript1

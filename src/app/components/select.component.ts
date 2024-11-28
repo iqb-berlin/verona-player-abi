@@ -9,8 +9,8 @@ import {MatRadioChange} from "@angular/material/radio";
 
 @Component({
   selector: 'player-select',
-
-      template: `
+  standalone: false,
+  template: `
     <div [class]="elementData().type === fieldType.MULTIPLE_CHOICE ? 'fx-row-start-start' : 'fx-row-start-center'"
       IsInViewDetection (intersecting)="comingIntoView()">
       @if (elementData().textBefore) {
@@ -60,8 +60,9 @@ import {MatRadioChange} from "@angular/material/radio";
         </mat-form-field>
       }
     </div>
-    `
+  `
 })
+
 export class SelectComponent extends ElementComponent implements OnInit, OnDestroy {
   elementData = input<SelectionElement>();
   selectInputControl = new FormControl();

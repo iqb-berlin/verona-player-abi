@@ -2,8 +2,10 @@ import {
   Directive, ElementRef, OnDestroy, OnInit, output } from '@angular/core';
 
 @Directive({
-  selector: '[IsInViewDetection]'
+  selector: '[IsInViewDetection]',
+  standalone: false,
 })
+
 export class IsInViewDirective implements OnInit, OnDestroy {
   intersecting = output();
   private intersectionObserver!: IntersectionObserver;

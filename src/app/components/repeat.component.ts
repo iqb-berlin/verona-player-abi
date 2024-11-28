@@ -6,8 +6,8 @@ import { RepeatBlock } from '../classes';
 
 @Component({
   selector: 'player-repeat',
-
-      template: `
+  standalone: false,
+  template: `
     <div class="fx-row-space-between-center">
       @if (elementData().numberOfSubFormsPrompt) {
         <div [style.flex]="'50'" [matTooltip]="elementData().helpText">
@@ -57,7 +57,7 @@ import { RepeatBlock } from '../classes';
         }
       </mat-accordion>
     }
-    `,
+  `,
   styles: ['mat-panel-title {font-size: larger}', 'button {margin: 10px}']
 })
 

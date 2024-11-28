@@ -7,8 +7,8 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
 
 @Component({
   selector: 'player-input',
-
-      template: `
+  standalone: false,
+  template: `
     <div class="fx-row-start-center" IsInViewDetection (intersecting)="comingIntoView()">
       @if (elementData().textBefore) {
         <div [style.flex] ="'0 1 50%'">
@@ -48,7 +48,7 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
           <div [style.margin-left]="'10px'">{{elementData().textAfter}}</div>
         }
       </div>
-    `
+  `
 })
 
 export class InputComponent extends ElementComponent implements OnInit, OnDestroy {

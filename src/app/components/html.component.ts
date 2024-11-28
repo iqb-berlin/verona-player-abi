@@ -5,6 +5,7 @@ import { TextElement } from '../classes';
 
 @Component({
   selector: 'player-html',
+  standalone: false,
   template: `
     <div [innerHTML]="content()"
     [matTooltip]="elementData().helpText" [matTooltipPosition]="'above'"></div>

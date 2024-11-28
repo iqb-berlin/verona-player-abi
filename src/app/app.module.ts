@@ -32,7 +32,7 @@ import { AppComponent } from './app.component';
 import { InputErrorPipe } from './components/input-error.pipe';
 import { PlayerToolbarComponent } from './toolbar/player-toolbar.component';
 import { IsInViewDirective } from './is-in-view-components/is-in-view.directive';
-import { InputScriptDialog } from './toolbar/input-script-dialog.component';
+import { InputScriptDialogComponent } from './toolbar/input-script-dialog.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +49,7 @@ import { InputScriptDialog } from './toolbar/input-script-dialog.component';
     CheckboxesComponent,
     PlayerToolbarComponent,
     IsInViewDirective,
-    InputScriptDialog,
+    InputScriptDialogComponent,
     HtmlComponent
   ],
   imports: [

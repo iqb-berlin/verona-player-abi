@@ -8,6 +8,7 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
 
 @Component({
   selector: 'player-likert',
+  standalone: false,
   template: `
     <mat-card class="fx-column-start-stretch">
       <div class="fx-row-space-between-center likert-header">
@@ -43,7 +44,7 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
         }
       </mat-card-content>
     </mat-card>
-    `,
+  `,
   styles: [
     '.likert-header {min-height: 40px}',
     '.likert-row:nth-child(even) {background-color: #F5F5F5;}',

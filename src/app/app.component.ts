@@ -13,6 +13,7 @@ import { SimpleBlock } from './classes';
 
 @Component({
   selector: 'app-root',
+  standalone: false,
   template: `
     @if (isStandalone) {
       <player-toolbar [parentForm]="form"></player-toolbar>
@@ -27,7 +28,7 @@ import { SimpleBlock } from './classes';
         </div>
       }
     </form>
-    `,
+  `,
   encapsulation: ViewEncapsulation.None
 })
 

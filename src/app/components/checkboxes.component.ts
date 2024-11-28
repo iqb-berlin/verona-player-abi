@@ -9,6 +9,7 @@ import {MatCheckboxChange} from "@angular/material/checkbox";
 
 @Component({
   selector: 'player-checkboxes',
+  standalone: false,
   template: `
     <div class="fx-row-start-start">
       @if (textBefore) {

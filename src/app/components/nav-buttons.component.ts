@@ -7,8 +7,8 @@ import { UnitNavigationTarget } from '../verona/verona.interfaces';
 
 @Component({
   selector: 'player-nav-button-group',
-  
-      template: `
+  standalone: false,
+  template: `
     <div class="fx-row-center-center">
       @for (option of elementData().options; track option) {
         <div>
@@ -20,7 +20,7 @@ import { UnitNavigationTarget } from '../verona/verona.interfaces';
         </div>
       }
     </div>
-    `,
+  `,
   styles: [
     `button {
       margin: 20px 5px
@@ -32,6 +32,7 @@ import { UnitNavigationTarget } from '../verona/verona.interfaces';
     }`
   ]
 })
+
 export class NavButtonsComponent extends ElementComponent implements OnInit {
   elementData = input<NavButtonGroupElement>();
   navigationRequested = output<string>();

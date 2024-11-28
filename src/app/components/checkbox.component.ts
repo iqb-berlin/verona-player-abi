@@ -8,8 +8,8 @@ import { MatCheckboxChange } from "@angular/material/checkbox";
 
 @Component({
   selector: 'player-checkbox',
-
-      template: `
+  standalone: false,
+  template: `
     <div class="fx-row-start-center">
       @if (elementData().textBefore) {
         <div [style.flex] ="'0 1 50%'">
@@ -30,8 +30,9 @@ import { MatCheckboxChange } from "@angular/material/checkbox";
         }
       </div>
     </div>
-    `
+  `
 })
+
 export class CheckboxComponent extends ElementComponent implements OnInit, OnDestroy {
   elementData = input<CheckboxElement>();
   checkboxControl = new FormControl();
