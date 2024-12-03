@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -68,6 +68,9 @@ import { InputScriptDialogComponent } from './toolbar/input-script-dialog.compon
     MatCardModule,
     MatMenuModule,
     MatDialogModule
+  ],
+  providers: [
+    provideExperimentalZonelessChangeDetection()
   ],
   bootstrap: [AppComponent]
 })
