@@ -6,7 +6,7 @@ import { lastValueFrom, map } from 'rxjs';
 import { VeronaService } from '../verona/verona.service';
 import { InputScriptDialogComponent } from './input-script-dialog.component';
 
-const testScript1 = `iqb-scripted::1.0
+const testScript1 = `iqb-scripted::1.2
 title::Testscript Title??Hilfetext1
 header::Abschnitt 1 Basic Elements??Hilfetext1
 header
@@ -44,7 +44,7 @@ repeat-start::examinee2::Wie viele Prüflinge gibt es?::Angaben zu Prüfling::20
     text::Repeat Inhalt2
   repeat-end
 repeat-end
-likert-start::trifft gar nicht zu##trifft eher nicht zu##trifft eher zu##trifft voll zu
+likert-start::0::1::trifft gar nicht zu##trifft eher nicht zu##trifft eher zu##trifft voll zu
     likert::LI001::iqb-scripted ist toll
     likert::LI002::simple player unit Definition ist toll
 likert-end
