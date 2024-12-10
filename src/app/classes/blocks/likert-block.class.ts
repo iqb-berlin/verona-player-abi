@@ -24,8 +24,8 @@ export class LikertBlock extends UIBlock {
         }
       }
     }
-    this.headerList = lineSplits[0].split('##');
-    return '';
+    this.headerList = lineSplits.shift().split('##');
+    return lineSplits.join('::');
   }
 
   clone(subform?: string): LikertBlock {

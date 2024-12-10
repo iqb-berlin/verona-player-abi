@@ -18,7 +18,6 @@ import {
 } from './classes';
 import { FieldType } from './classes/interfaces';
 import { InputElement } from './classes/elements/input-element.class';
-import {min} from "rxjs";
 
 @Injectable({
   providedIn: 'root'

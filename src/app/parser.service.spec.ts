@@ -2,15 +2,16 @@ import { TestBed } from '@angular/core/testing';
 import { ParserService } from './parser.service';
 import {
   CheckboxElement,
-  DropDownElement,
-  MultiChoiceElement,
+  SelectionElement,
   NumberInputElement,
   TextElement,
   TextInputElement,
-  UIElement
-} from './classes/UIElement';
-import { PropertyKey } from './classes/interfaces';
-import { IfThenElseBlock, RepeatBlock, UIBlock } from './classes/UIBlock';
+  UIElement,
+  IfThenElseBlock,
+  RepeatBlock,
+  UIBlock
+} from './classes';
+import { PropertyKey } from './classes';
 
 describe('ParserService', () => {
   let parserService: ParserService;

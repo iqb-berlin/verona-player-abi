@@ -1,20 +1,20 @@
-# Release Note 5.0.0.rc #
+# Release Note 5.0.0-rc #
 
 ## UI-Anpassungen ##
 
-* Verbesserte Anzeige der required Felder
+* Verbesserte Anzeige der required Felder - tbc
 * Dropdown und Counter Felder können nun auch mit Enter-Taste bestätigt werden
-* Verbesserung der Accessibility durch bessere Nutzung von aria-Labeln
+* Verbesserung der Accessibility durch bessere Nutzung von aria-Labeln - tbc
 
 ## Funktions-Änderungen ##
-siehe auch Neue iqb-scripted Version
+siehe auch neue iqb-scripted Version
 
 * Likert Elemente können nun ebenfalls als required gesetzt werden
 * dabei kann nur der komplette Likert Block als required gesetzt werden
 * dadurch wird jedes Likert Element required gesetzt
 
 
-* Reset Button (kleines x) bei Radio-Button-Gruppen - UI noch nicht fix
+* Reset Button (kleines x) bei Radio-Button-Gruppen - UI tbd
 * dadurch wird eine bereits getätigte Auswahl wieder zurück gesetzt
 * einsetzbar bei multiple-choice und likert
 

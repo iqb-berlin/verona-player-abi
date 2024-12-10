@@ -11,7 +11,7 @@ interface LocalUnitState {
   unitStateDataType?: string
 }
 
-const UnitStateDataType = 'iqb-standard@1.2';
+const UnitStateDataType = 'iqb-standard@1.1';
 
 @Injectable({
   providedIn: 'root'
