@@ -1,6 +1,6 @@
 import {
   Component, OnDestroy, OnInit, ViewEncapsulation, input } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { ErrorElement, LikertBlock, LikertElement } from '../classes';
 import { InputElement } from '../classes/elements/input-element.class';
@@ -64,9 +64,13 @@ export class LikertComponent extends ElementComponent implements OnInit, OnDestr
   ngOnInit() {
     this.elements = [];
     this.headerList = this.elementData().headerList;
+    const required = this.elementData().required;
     this.elementData().elements.forEach(likertElement => {
       if (likertElement instanceof LikertElement) {
         const formControl = new FormControl();
+        if (required) {
+          formControl.setValidators(Validators.requiredTrue);
+        }
         formControl.setValue(likertElement.value, { emitEvent: false });
         this.localForm.addControl(likertElement.id, formControl);
         this.elements.push(likertElement);

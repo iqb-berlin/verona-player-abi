@@ -3,6 +3,8 @@ import { FieldType } from '../interfaces';
 
 export class LikertBlock extends UIBlock {
   headerList: string[];
+  required = false;
+  enableReset = false;
 
   constructor(subform: string, definitionLine?: string) {
     super(subform, definitionLine);
@@ -11,7 +13,18 @@ export class LikertBlock extends UIBlock {
 
   parseDefinition(definitionLine: string): string {
     const localDefinition = super.parseDefinition(definitionLine);
-    this.headerList = localDefinition.split('##');
+    const lineSplits = localDefinition.split('::');
+    if (lineSplits.length > 0) {
+      if (lineSplits[0].trim() === "0" || lineSplits[0].trim() === "1") {
+        this.required = lineSplits.shift().trim() === '1';
+        if (lineSplits.length > 0) {
+          if (lineSplits[0].trim() === "0" || lineSplits[0].trim() === "1") {
+            this.enableReset = lineSplits.shift().trim() === '1';
+          }
+        }
+      }
+    }
+    this.headerList = lineSplits[0].split('##');
     return '';
   }
 
