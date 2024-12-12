@@ -95,8 +95,8 @@ Bei einer `checkbox` kreuzt man nur an. Bei `multiple-choice` werden die Optione
 |                                    | Achtung: Als Wert der Variablen wird ‘true’ oder ‘false’ gespeichert. Der Wert der Variable ist im Ausgangszustand immer ‘false’. |                           |
 | `multiple-choice` oder `drop-down` | 1\. Name der Variablen, in die die Eingabe gespeichert werden soll                                                                | _Angabe ist erforderlich_ |
 |                                    | 2\. Pflichtfeld: `0`\=nein, `1`\=ja                                                                                               | `0`                       |
-|                                    | 3\. ResetButton anzeigen: `0`\=nein, `1`\=ja [^1]                                                                                     | `0`                       |
-|                                    | 4\. Text vor der Optionsliste (Eingabeaufforderung)                                                                               | _kein Text_               |
+|                                    | 3\. Text vor der Optionsliste (Eingabeaufforderung)                                                                               | _kein Text_               |
+|                                    | 4\. ResetButton anzeigen: `0`\=nein, `1`\=ja [^1]                                                                                 | `0`                       |
 |                                    | 5\. Liste der Optionen, jeweils getrennt durch `##`                                                                               | _keine_                   |
 |                                    | Achtung: Als Wert der Variablen wird die Position der gewählten Option gespeichert, beginnend mit `1`.                            |                           |
 

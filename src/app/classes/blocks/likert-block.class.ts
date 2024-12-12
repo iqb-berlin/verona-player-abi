@@ -9,6 +9,7 @@ export class LikertBlock extends UIBlock {
   constructor(subform: string, definitionLine?: string) {
     super(subform, definitionLine);
     this.type = FieldType.LIKERT_BLOCK;
+    if (definitionLine) this.parseDefinition(definitionLine);
   }
 
   parseDefinition(definitionLine: string): string {
@@ -31,6 +32,8 @@ export class LikertBlock extends UIBlock {
   clone(subform?: string): LikertBlock {
     const newElement = new LikertBlock(subform);
     newElement.headerList = this.headerList;
+    newElement.required = this.required;
+    newElement.enableReset = this.enableReset;
     this.elements.forEach(e => {
       newElement.elements.push(e.clone(subform));
     });

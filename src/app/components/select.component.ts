@@ -29,6 +29,9 @@ import {MatRadioChange} from "@angular/material/radio";
               {{option}}
             </mat-radio-button>
           }
+          @if (this.elementData().enableReset) {
+            <button [style]="'width:min-content'" (click)="resetControl($event)">x</button>
+          }
           @if (selectInputControl.touched && selectInputControl.errors) {
             <mat-error>
               {{selectInputControl.errors | errorTransform}}
@@ -75,6 +78,13 @@ export class SelectComponent extends ElementComponent implements OnInit, OnDestr
 
   ngOnDestroy(): void {
     this.parentForm().removeControl(this.elementData().id);
+  }
+
+  resetControl($event: any) {
+    this.selectInputControl.setValue(null);
+    this.elementData().value = undefined;
+    this.elementData().status = VeronaResponseStatus.VALUE_CHANGED;
+    this.valueChange.emit();
   }
 
   valueChanged($event: MatSelectChange | MatRadioChange) {

@@ -22,7 +22,7 @@ checkbox::check_var1::0::Bitte ankreuzen??Hilfetext1
 if-start::check_var1::true
   text::Checked
 if-end
-multiple-choice::mc_var1::1::Multiple Choice Feld: ::Choice1##Choice2##Choice3??Hilfetext1
+multiple-choice::mc_var1::1::Multiple Choice Feld: ::1::Choice1##Choice2##Choice3??Hilfetext1
 drop-down::dd_var1::1::Dropdown Feld: ::Choice1##Choice2##Choice3??Hilfetext1
 if-start::mc_var1::1
   text::Choice 1 chosen
@@ -40,9 +40,7 @@ repeat-start::examinee1::Wie viele Prüflinge gibt es?::Angaben zu Prüfling::20
 repeat-end
 repeat-start::examinee2::Wie viele Prüflinge gibt es?::Angaben zu Prüfling::20
   text::Repeat Inhalt
-  repeat-start::examinee3::Wie viele Prüflinge gibt es2?::Angaben zu Prüfling::20
-    text::Repeat Inhalt2
-  repeat-end
+  checkbox::check_var2::1::Bitte ankreuzen??Hilfetext1
 repeat-end
 likert-start::0::1::trifft gar nicht zu##trifft eher nicht zu##trifft eher zu##trifft voll zu
     likert::LI001::iqb-scripted ist toll

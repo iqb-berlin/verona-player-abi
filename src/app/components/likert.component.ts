@@ -38,7 +38,9 @@ import { MatRadioChange } from "@angular/material/radio";
                     <mat-radio-button [value]="(i + 1).toString()">
                     </mat-radio-button>
                   }
-                  <button (click)="resetControl(element.id, $event)">Reset</button>
+                  @if (this.elementData().enableReset) {
+                    <button (click)="resetControl(element.id, $event)">Reset</button>
+                  }
                 </mat-radio-group>
               </div>
             }
@@ -93,7 +95,7 @@ export class LikertComponent extends ElementComponent implements OnInit, OnDestr
     const myElement= this.elements.find(e => (e as InputElement).id === id);
     if (myElement) {
       (myElement as InputElement).value = undefined;
-      (myElement as InputElement).status = VeronaResponseStatus.DISPLAYED;
+      (myElement as InputElement).status = VeronaResponseStatus.VALUE_CHANGED;
       this.valueChange.emit();
     }
   }
