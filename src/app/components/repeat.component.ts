@@ -3,12 +3,13 @@ import {
 import { FormControl, Validators } from '@angular/forms';
 import { ElementComponent } from './element.component';
 import { RepeatBlock } from '../classes';
+import {VeronaResponseStatus} from "../verona/verona.interfaces";
 
 @Component({
   selector: 'player-repeat',
   standalone: false,
   template: `
-    <div class="fx-row-space-between-center">
+    <div class="fx-row-space-between-center" IsInViewDetection (intersecting)="comingIntoView()">
       @if (elementData().numberOfSubFormsPrompt) {
         <div [style.flex]="'50'" [matTooltip]="elementData().helpText">
           {{elementData().numberOfSubFormsPrompt}}
@@ -80,6 +81,7 @@ export class RepeatComponent extends ElementComponent implements OnInit, OnDestr
     const valueNumberTry = Number(this.numberInputControl.value);
     if (!Number.isNaN(valueNumberTry)) {
       this.elementData().numberOfSubForms = valueNumberTry;
+      this.elementData().status = VeronaResponseStatus.VALUE_CHANGED;
       this.valueChange.emit();
     }
   }
@@ -92,5 +94,12 @@ export class RepeatComponent extends ElementComponent implements OnInit, OnDestr
 
   ngOnDestroy(): void {
     this.parentForm().removeControl((this.elementData() as RepeatBlock).id);
+  }
+
+  comingIntoView() {
+    if (this.elementData().status === VeronaResponseStatus.NOT_REACHED) {
+      this.elementData().status = VeronaResponseStatus.DISPLAYED;
+      this.valueChange.emit();
+    }
   }
 }
