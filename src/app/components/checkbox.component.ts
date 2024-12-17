@@ -12,11 +12,11 @@ import { MatCheckboxChange } from "@angular/material/checkbox";
   template: `
     <div class="fx-row-start-center">
       @if (elementData().textBefore) {
-        <div [style.flex] ="'0 1 50%'">
+        <div [style.flex]="'0 1 max(320px, 50%)'">
           {{elementData().textBefore}}
         </div>
       }
-      <div [style.flex]="'50'" IsInViewDetection (intersecting)="comingIntoView()">
+      <div [style.flex]="'1 1 320px'" IsInViewDetection (intersecting)="comingIntoView()">
         <mat-checkbox [formControl]="checkboxControl"
           [matTooltip]="elementData().helpText"
           (change)="valueChanged($event)"

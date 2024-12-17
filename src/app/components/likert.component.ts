@@ -1,6 +1,8 @@
 import {
-  Component, OnDestroy, OnInit, ViewEncapsulation, input } from '@angular/core';
+  Component, OnDestroy, OnInit, ViewEncapsulation, input, inject, signal
+} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import { ElementComponent } from './element.component';
 import { ErrorElement, LikertBlock, LikertElement } from '../classes';
 import { InputElement } from '../classes/elements/input-element.class';
@@ -12,14 +14,19 @@ import { MatRadioChange } from "@angular/material/radio";
   standalone: false,
   template: `
     <mat-card class="fx-column-start-stretch">
-      <div class="fx-row-space-between-center likert-header">
-        <div [style.flex]="'40'">&nbsp;</div>
-        <div [style.flex]="'60'" class="fx-row-space-around-center">
-          @for (header of headerList; track header) {
-            <div class="fx-row-center-center">{{header}}</div>
-          }
+      @if (!this.matchBreakpoint()) {
+        <div class="fx-row-space-between-center likert-header">
+          <div [style.flex]="'40'">&nbsp;</div>
+          <div [style.flex]="'60'" class="fx-row-space-around-center">
+            @for (header of headerList; track header) {
+              <div class="fx-row-center-center">{{header}}</div>
+            }
+            @if (this.elementData().enableReset) {
+              <button style="visibility:hidden">Reset</button>
+            }
+          </div>
         </div>
-      </div>
+      }
       <mat-card-content class="fx-column-start-stretch" [formGroup]="localForm">
         @for (element of elements; track element) {
           <div class="likert-row">
@@ -35,7 +42,10 @@ import { MatRadioChange } from "@angular/material/radio";
                 <mat-radio-group [formControlName]="element.id" [style.flex]="'60'"
                   class="fx-row-space-around-center" (change)="valueChanged(element.id, $event)">
                   @for (header of headerList; track header; let i = $index) {
-                    <mat-radio-button [value]="(i + 1).toString()">
+                    <mat-radio-button [value]="(i + 1).toString()" [aria-label]="header">
+                      @if (this.matchBreakpoint()) {
+                        {{header}}
+                      }
                     </mat-radio-button>
                   }
                   @if (this.elementData().enableReset) {
@@ -53,7 +63,9 @@ import { MatRadioChange } from "@angular/material/radio";
     '.likert-header {min-height: 40px}',
     '.likert-row:nth-child(even) {background-color: #F5F5F5;}',
     '.likert-row:nth-child(odd) {background-color: lightgrey;}',
-    '.likert-row {padding: 2px 10px}'
+    '.likert-row {padding: 2px 10px}',
+    'button {margin: 10px}',
+    '@media only screen and (max-width:600px) {mat-card-content.fx-column-start-stretch, .fx-row-space-around-center {flex-direction: column}}'
   ],
   encapsulation: ViewEncapsulation.None
 })
@@ -63,7 +75,19 @@ export class LikertComponent extends ElementComponent implements OnInit, OnDestr
   localFormId = Math.floor(Math.random() * 20000000 + 10000000).toString();
   headerList: string[];
   elementData = input<LikertBlock>();
+  matchBreakpoint = signal<boolean>(false);
   elements: (LikertElement | ErrorElement)[];
+
+  constructor() {
+    super();
+    inject(BreakpointObserver)
+      .observe([
+        Breakpoints.XSmall
+      ])
+      .subscribe(result => {
+        this.matchBreakpoint.set(result.matches);
+      });
+  }
 
   ngOnInit() {
     this.elements = [];

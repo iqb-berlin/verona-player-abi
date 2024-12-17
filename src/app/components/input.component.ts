@@ -11,7 +11,7 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
   template: `
     <div class="fx-row-start-center" IsInViewDetection (intersecting)="comingIntoView()">
       @if (elementData().textBefore) {
-        <div [style.flex] ="'0 1 50%'">
+        <div [style.flex] ="'50 1 320px'">
           {{elementData().textBefore}}
         </div>
       }
@@ -37,7 +37,7 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
       }
       @if (elementAsTextInput.maxLines <= 1 || elementAsNumberInput.maxValue || elementAsNumberInput.minValue) {
         <mat-form-field appearance="fill"
-          [style.flex]="'0 1 25%'">
+          [style.flex]="'0 1 200px'">
           <mat-label>{{elementData().textBefore}}</mat-label>
           <input matInput [formControl]="inputControl" autocomplete="off" (input)="valueChanged($event)"
             [matTooltip]="elementData().helpText" matTooltipPosition="above"/>
@@ -49,7 +49,7 @@ import { VeronaResponseStatus } from '../verona/verona.interfaces';
           </mat-form-field>
         }
         @if (elementData().textAfter) {
-          <div [style.margin-left]="'10px'">{{elementData().textAfter}}</div>
+          <div [style.margin-left]="'10px'" [style.flex]="'1 1 25%'">{{elementData().textAfter}}</div>
         }
       </div>
   `

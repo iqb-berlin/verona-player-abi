@@ -11,12 +11,12 @@ import {VeronaResponseStatus} from "../verona/verona.interfaces";
   template: `
     <div class="fx-row-space-between-center" IsInViewDetection (intersecting)="comingIntoView()">
       @if (elementData().numberOfSubFormsPrompt) {
-        <div [style.flex]="'50'" [matTooltip]="elementData().helpText">
+        <div [style.flex]="'0 1 max(320px, 50%)'" [matTooltip]="elementData().helpText">
           {{elementData().numberOfSubFormsPrompt}}
         </div>
       }
       @if (elementData().numberOfSubFormsPrompt) {
-        <div [style.flex]="'50'"
+        <div [style.flex]="'1 1 320px'"
           class="fx-row-center-center">
           <mat-form-field [style.flex]="'30'">
             <input matInput type="number"

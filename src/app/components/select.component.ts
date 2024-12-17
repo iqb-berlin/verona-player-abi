@@ -14,18 +14,20 @@ import {MatRadioChange} from "@angular/material/radio";
     <div [class]="elementData().type === fieldType.MULTIPLE_CHOICE ? 'fx-row-start-start' : 'fx-row-start-center'"
       IsInViewDetection (intersecting)="comingIntoView()">
       @if (elementData().textBefore) {
-        <div [style.flex] ="'0 1 50%'">
+        <div [style.flex] ="'0 1 max(320px, 50%)'">
           {{elementData().textBefore}}
         </div>
       }
       @if (elementData().type === fieldType.MULTIPLE_CHOICE) {
         <mat-radio-group
-          [style.flex]="'50'" class="fx-column-start-stretch" [formControl]="selectInputControl"
+          [style.flex]="'1 1 320px'" class="fx-column-start-stretch"
+          [formControl]="selectInputControl"
           (change)="valueChanged($event)"
           [matTooltip]="elementData().helpText" [matTooltipPosition]="'above'">
           @for (option of elementData().options; track option; let i = $index) {
             <mat-radio-button
-              [value]="(i + 1).toString()">
+              [value]="(i + 1).toString()"
+              [aria-label]="option">
               {{option}}
             </mat-radio-button>
           }
@@ -41,7 +43,7 @@ import {MatRadioChange} from "@angular/material/radio";
       }
 
       @if (elementData().type === fieldType.DROP_DOWN) {
-        <mat-form-field [style.flex]="'50'"
+        <mat-form-field [style.flex]="'1 1 320px'"
           appearance="fill">
           <mat-select [formControl]="selectInputControl" placeholder="Bitte wählen"
             (selectionChange)="valueChanged($event)"
@@ -63,7 +65,8 @@ import {MatRadioChange} from "@angular/material/radio";
         </mat-form-field>
       }
     </div>
-  `
+  `,
+  styles: ['button {margin: 6px 9px}']
 })
 
 export class SelectComponent extends ElementComponent implements OnInit, OnDestroy {
