@@ -58,6 +58,8 @@ export class AppComponent implements OnInit, OnDestroy {
             tmpRootBlock.check(chunk.variables);
           });
         }
+        this.lastPresentationProgress = ProgressValue.UNSET;
+        this.lastResponseProgress = ProgressValue.UNSET;
         this.rootBlock = tmpRootBlock;
         this.cdRef.detectChanges();
       });
