@@ -19,7 +19,10 @@ import {VeronaResponseStatus} from "../verona/verona.interfaces";
         <div [style.flex]="'50'"
           class="fx-row-center-center">
           <mat-form-field [style.flex]="'30'">
-            <input matInput type="number" [formControl]="numberInputControl" autocomplete="off"/>
+            <input matInput type="number"
+                   (keyup.enter)="applyRepeatNumber()"
+                   [formControl]="numberInputControl"
+                   autocomplete="off"/>
             @if (numberInputControl.errors) {
               <mat-error>
                 {{numberInputControl.errors | errorTransform}}
