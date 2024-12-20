@@ -13,11 +13,11 @@ import {MatCheckboxChange} from "@angular/material/checkbox";
   template: `
     <div class="fx-row-start-start">
       @if (textBefore) {
-        <div [style.flex] ="'0 1 50%'">
+        <div [style.flex] ="'0 1 max(320px, 50%)'">
           {{textBefore}}
         </div>
       }
-      <div [style.flex]="'50'" class="fx-column-start-stretch" [formGroup]="localForm">
+      <div [style.flex]="'1 1 320px'" class="fx-column-start-stretch" [formGroup]="localForm">
         @for (element of elements; track element) {
           <div>
             @if (element.type === fieldType.SCRIPT_ERROR) {

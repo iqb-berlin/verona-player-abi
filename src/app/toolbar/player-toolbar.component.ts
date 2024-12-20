@@ -32,6 +32,12 @@ if-start::mc_var1::1
 if-else
   text::NOT Choice1
 if-end
+checkboxes-start::Wann schauen Sie besonders gern aus dem Fenster?
+  checkbox::fenster01::Morgens
+  checkbox::fenster02::Mittags
+  checkbox::fenster03::Abends
+  checkbox::fenster04::Nachts
+checkboxes-end
 repeat-start::examinee1::Wie viele Prüflinge gibt es?::Angaben zu Prüfling::20
   text::Repeat Inhalt
   if-start::check_var1::true
