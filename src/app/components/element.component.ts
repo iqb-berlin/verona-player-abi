@@ -1,12 +1,14 @@
 import {
-  Directive, Input, EventEmitter, Output
-} from '@angular/core';
+  Directive, input, output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FieldType } from '../classes/interfaces';
 
-@Directive()
+@Directive({
+  standalone: false
+})
+
 export abstract class ElementComponent {
-  @Input() parentForm: FormGroup;
-  @Output() valueChange = new EventEmitter();
-  fieldType = FieldType; // to enable direct access to enum
+  parentForm = input<FormGroup>();
+  valueChange = output();
+  fieldType = FieldType;
 }

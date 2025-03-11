@@ -1,12 +1,13 @@
 import {
-  Directive, ElementRef, EventEmitter, OnDestroy, OnInit, Output
-} from '@angular/core';
+  Directive, ElementRef, OnDestroy, OnInit, output } from '@angular/core';
 
 @Directive({
-  selector: '[IsInViewDetection]'
+  selector: '[IsInViewDetection]',
+  standalone: false,
 })
+
 export class IsInViewDirective implements OnInit, OnDestroy {
-  @Output() intersecting = new EventEmitter();
+  intersecting = output();
   private intersectionObserver!: IntersectionObserver;
 
   constructor(private elementRef: ElementRef) {}

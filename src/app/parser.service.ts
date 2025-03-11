@@ -47,7 +47,8 @@ export class ParserService {
     if (lineMatches && lineMatches.length > 2) {
       const majorVersion = parseInt(lineMatches[1], 10);
       const minorVersion = parseInt(lineMatches[2], 10);
-      if (majorVersion === 1 && minorVersion === 0) return true;
+      if (majorVersion === 1 )
+        if (minorVersion === 2 || minorVersion === 1 || minorVersion === 0) return true;
     }
     return false;
   }

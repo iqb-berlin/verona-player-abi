@@ -1,6 +1,7 @@
 export { CheckboxBlock } from './blocks/checkbox-block.class';
 export { SelectionElement } from './elements/selection-element.class';
 export { UIElement } from './UIElement';
+export { UIBlock } from './UIBlock';
 export { IfThenElseBlock } from './blocks/if-then-else-block.class';
 export { LikertElement } from './elements/likert-element.class';
 export { LikertBlock } from './blocks/likert-block.class';

@@ -7,3 +7,4 @@ export { RepeatComponent } from './repeat.component';
 export { SelectComponent } from './select.component';
 export { SubFormComponent } from './sub-form.component';
 export { TextComponent } from './text.component';
+export { HtmlComponent } from './html.component';

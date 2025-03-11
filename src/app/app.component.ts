@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
@@ -13,15 +14,20 @@ import { SimpleBlock } from './classes';
 
 @Component({
   selector: 'app-root',
+  standalone: false,
   template: `
-    <player-toolbar *ngIf="isStandalone" [parentForm]="form"></player-toolbar>
+    @if (isStandalone) {
+      <player-toolbar [parentForm]="form"></player-toolbar>
+    }
     <form #playerContent [formGroup]="form">
-      <div *ngFor="let element of rootBlock.elements" [style.margin]="'0px 30px'">
-        <player-sub-form [elementData]="element" [parentForm]="form"
-                         (valueChange)="valueChangesHappening.next($event)"
-                         (navigationRequested)="navigationRequested($event);">
-        </player-sub-form>
-      </div>
+      @for (element of rootBlock.elements; track element) {
+        <div [style.margin]="'0px 30px'">
+          <player-sub-form [elementData]="element" [parentForm]="form"
+            (valueChange)="valueChangesHappening.next($event)"
+            (navigationRequested)="navigationRequested($event);">
+          </player-sub-form>
+        </div>
+      }
     </form>
   `,
   encapsulation: ViewEncapsulation.None
@@ -38,7 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
   lastPresentationProgress: ProgressValue = ProgressValue.UNSET;
   lastResponseProgress: ProgressValue = ProgressValue.UNSET;
 
-  constructor(private veronaService: VeronaService) {
+  constructor(public cdRef: ChangeDetectorRef, private veronaService: VeronaService) {
     this.veronaService.navigationDenied
       .pipe(takeUntil(this.ngUnsubscribe))
       // to evaluate reason, subscribe with param
@@ -52,7 +58,10 @@ export class AppComponent implements OnInit, OnDestroy {
             tmpRootBlock.check(chunk.variables);
           });
         }
+        this.lastPresentationProgress = ProgressValue.UNSET;
+        this.lastResponseProgress = ProgressValue.UNSET;
         this.rootBlock = tmpRootBlock;
+        this.cdRef.detectChanges();
       });
     this.valueChangesHappening
       .pipe(
@@ -85,11 +94,15 @@ export class AppComponent implements OnInit, OnDestroy {
       id: 'allData',
       variables: allValues
     }], newResponseProgress, newPresentationProgress);
+    this.cdRef.detectChanges();
   }
 
   // eslint-disable-next-line class-methods-use-this
   ngOnInit() {
-    setTimeout(() => VeronaService.sendReadyNotification());
+    setTimeout(() => {
+      VeronaService.sendReadyNotification();
+      this.cdRef.detectChanges();
+    });
   }
 
   ngOnDestroy(): void {

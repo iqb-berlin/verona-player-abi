@@ -1,13 +1,12 @@
 import {
-  Component, EventEmitter, Input, Output
-} from '@angular/core';
+  Component, input, output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { lastValueFrom, map } from 'rxjs';
 import { VeronaService } from '../verona/verona.service';
-import { InputScriptDialog } from './input-script-dialog.component';
+import { InputScriptDialogComponent } from './input-script-dialog.component';
 
-const testScript1 = `iqb-scripted::1.0
+const testScript1 = `iqb-scripted::1.2
 title::Testscript Title??Hilfetext1
 header::Abschnitt 1 Basic Elements??Hilfetext1
 header
@@ -23,7 +22,7 @@ checkbox::check_var1::0::Bitte ankreuzen??Hilfetext1
 if-start::check_var1::true
   text::Checked
 if-end
-multiple-choice::mc_var1::1::Multiple Choice Feld: ::Choice1##Choice2##Choice3??Hilfetext1
+multiple-choice::mc_var1::1::Multiple Choice Feld: ::1::Choice1##Choice2##Choice3??Hilfetext1
 drop-down::dd_var1::1::Dropdown Feld: ::Choice1##Choice2##Choice3??Hilfetext1
 if-start::mc_var1::1
   text::Choice 1 chosen
@@ -33,6 +32,12 @@ if-start::mc_var1::1
 if-else
   text::NOT Choice1
 if-end
+checkboxes-start::Wann schauen Sie besonders gern aus dem Fenster?
+  checkbox::fenster01::Morgens
+  checkbox::fenster02::Mittags
+  checkbox::fenster03::Abends
+  checkbox::fenster04::Nachts
+checkboxes-end
 repeat-start::examinee1::Wie viele Prüflinge gibt es?::Angaben zu Prüfling::20
   text::Repeat Inhalt
   if-start::check_var1::true
@@ -41,11 +46,9 @@ repeat-start::examinee1::Wie viele Prüflinge gibt es?::Angaben zu Prüfling::20
 repeat-end
 repeat-start::examinee2::Wie viele Prüflinge gibt es?::Angaben zu Prüfling::20
   text::Repeat Inhalt
-  repeat-start::examinee3::Wie viele Prüflinge gibt es2?::Angaben zu Prüfling::20
-    text::Repeat Inhalt2
-  repeat-end
+  checkbox::check_var2::1::Bitte ankreuzen??Hilfetext1
 repeat-end
-likert-start::trifft gar nicht zu##trifft eher nicht zu##trifft eher zu##trifft voll zu
+likert-start::0::1::trifft gar nicht zu##trifft eher nicht zu##trifft eher zu##trifft voll zu
     likert::LI001::iqb-scripted ist toll
     likert::LI002::simple player unit Definition ist toll
 likert-end
@@ -53,6 +56,7 @@ nav-button-group::previous##next##first##last##end`;
 
 @Component({
   selector: 'player-toolbar',
+  standalone: false,
   template: `
     <button mat-fab [matMenuTriggerFor]="menu" matTooltip="Load/Save..." matTooltipPosition="above">
       <mat-icon>menu</mat-icon>
@@ -75,8 +79,8 @@ nav-button-group::previous##next##first##last##end`;
   ]
 })
 export class PlayerToolbarComponent {
-  @Input() parentForm: FormGroup;
-  @Output() toggleDrawerClick = new EventEmitter();
+  parentForm = input<FormGroup>();
+  toggleDrawerClick = output();
   private lastScript = '';
 
   constructor(
@@ -85,7 +89,7 @@ export class PlayerToolbarComponent {
   ) { }
 
   scriptDialogBox() {
-    const dialogRef = this.inputScriptDialog.open(InputScriptDialog, {
+    const dialogRef = this.inputScriptDialog.open(InputScriptDialogComponent, {
       width: '600px',
       height: '700px',
       data: this.lastScript || testScript1
@@ -117,6 +121,6 @@ export class PlayerToolbarComponent {
   }
 
   check() {
-    VeronaService.sendConsoleMessage_Info(this.parentForm.valid ? 'Form is valid' : 'Form is not valid');
+    VeronaService.sendConsoleMessage_Info(this.parentForm().valid ? 'Form is valid' : 'Form is not valid');
   }
 }

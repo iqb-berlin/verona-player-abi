@@ -1,7 +1,11 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ValidationErrors } from '@angular/forms';
 
-@Pipe({ name: 'errorTransform' })
+@Pipe({
+  name: 'errorTransform',
+  standalone: false
+})
+
 export class InputErrorPipe implements PipeTransform {
   private errorMessages = {
     max: 'Wert zu groß',
