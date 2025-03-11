@@ -31,7 +31,7 @@ import {MatRadioChange} from "@angular/material/radio";
               {{option}}
             </mat-radio-button>
           }
-          @if (this.elementData().enableReset) {
+          @if (elementData().enableReset) {
             <button [style]="'width:min-content'" (click)="resetControl($event)">x</button>
           }
           @if (selectInputControl.touched && selectInputControl.errors) {
